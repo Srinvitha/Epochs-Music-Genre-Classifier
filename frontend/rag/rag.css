@@ -112,6 +112,39 @@
   white-space:pre-wrap;
 }
 
+#ragAnswer p {
+  margin: 0 0 0.85rem;
+  line-height: 1.7;
+}
+
+#ragAnswer h1,
+#ragAnswer h2,
+#ragAnswer h3 {
+  margin: 1rem 0 0.5rem;
+  font-weight: 700;
+}
+
+#ragAnswer ul,
+#ragAnswer ol {
+  margin: 0.5rem 0 1rem;
+  padding-left: 1.5rem;
+}
+
+#ragAnswer li {
+  margin-bottom: 0.4rem;
+  line-height: 1.6;
+}
+
+#ragAnswer strong {
+  font-weight: 700;
+}
+
+#ragAnswer code {
+  padding: 0.15rem 0.35rem;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
 .rag-sources {
   margin-top:12px;
   color:#a9a1b8;

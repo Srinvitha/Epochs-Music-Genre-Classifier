@@ -4,6 +4,60 @@ function getCurrentSongDNA() {
   return window.__epochSongDNA || {};
 }
 
+function renderRagMarkdown(markdown) {
+  const inlineFormat = text =>
+    escapeHtml(text)
+      .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+      .replace(/\*(.+?)\*/g, "<em>$1</em>")
+      .replace(/`(.+?)`/g, "<code>$1</code>");
+
+  const lines = String(markdown || "").split(/\r?\n/);
+  const html = [];
+  let listType = null;
+
+  const closeList = () => {
+    if (listType) {
+      html.push(`</${listType}>`);
+      listType = null;
+    }
+  };
+
+  for (const rawLine of lines) {
+    const line = rawLine.trim();
+
+    if (!line) {
+      closeList();
+      continue;
+    }
+
+    const heading = line.match(/^(#{1,3})\s+(.+)$/);
+    const bullet = line.match(/^[-*]\s+(.+)$/);
+    const numbered = line.match(/^\d+[.)]\s+(.+)$/);
+
+    if (heading) {
+      closeList();
+      const level = heading[1].length;
+      html.push(`<h${level}>${inlineFormat(heading[2])}</h${level}>`);
+    } else if (bullet || numbered) {
+      const type = bullet ? "ul" : "ol";
+
+      if (listType !== type) {
+        closeList();
+        html.push(`<${type}>`);
+        listType = type;
+      }
+
+      html.push(`<li>${inlineFormat((bullet || numbered)[1])}</li>`);
+    } else {
+      closeList();
+      html.push(`<p>${inlineFormat(line)}</p>`);
+    }
+  }
+
+  closeList();
+  return html.join("");
+}
+
 async function askEpochs(question) {
   const answer = document.getElementById("ragAnswer");
   const sources = document.getElementById("ragSources");
@@ -36,7 +90,9 @@ async function askEpochs(question) {
       throw new Error(data.detail || "RAG request failed.");
     }
 
-    answer.textContent = data.answer || "No answer returned.";
+    answer.innerHTML = renderRagMarkdown(
+      data.answer || "No answer returned."
+    );
 
     if (Array.isArray(data.sources) && data.sources.length) {
       sources.innerHTML =
