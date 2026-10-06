@@ -228,9 +228,6 @@ User Question + Current Song DNA
   Development             Jupyter Notebook, VS Code Experiments and
                                                     implementation
 
-  Version Control         Git + GitHub              Source control
-  -------------------------------------------------------------------------
-
 ------------------------------------------------------------------------
 
 # Running Epochs Locally
@@ -238,11 +235,9 @@ User Question + Current Song DNA
 ## 1. Clone the repository
 
 ``` bash
-git clone <repository-url>
+git clone https://github.com/Srinvitha/Epochs-Music-Genre-Classifier
 cd Epochs-Music-Genre-Classifier
 ```
-
-Replace `<repository-url>` with the repository's Git URL.
 
 ------------------------------------------------------------------------
 
