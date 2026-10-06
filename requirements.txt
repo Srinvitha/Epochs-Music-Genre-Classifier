@@ -1,0 +1,12 @@
+numpy
+pandas
+matplotlib
+seaborn
+librosa
+soundfile
+scikit-learn
+joblib
+jupyter
+fastapi
+uvicorn
+python-multipart

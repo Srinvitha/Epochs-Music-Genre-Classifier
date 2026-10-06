@@ -1,0 +1,29 @@
+```gitignore
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+mvenv/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Environment variables and secrets
+.env
+.env.*
+
+# RAG generated storage
+backend/rag/storage/
+
+# Trained models
+models/*.joblib
+
+# Datasets
+data/raw/
+data/extracted/
+
+# Generated features and results
+data/processed/
+results/
+```

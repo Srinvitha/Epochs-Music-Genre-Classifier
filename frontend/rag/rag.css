@@ -1,0 +1,139 @@
+.rag-panel {
+  margin-top: 24px;
+  padding: 28px;
+  border: 1px solid rgba(196,181,253,.22);
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at 85% 10%, rgba(124,58,237,.14), transparent 35%),
+    rgba(10,7,18,.72);
+  box-shadow: 0 24px 80px rgba(0,0,0,.22);
+}
+
+.rag-panel-head {
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:20px;
+}
+
+.rag-kicker {
+  font-size:11px;
+  letter-spacing:.14em;
+  color:#c4b5fd;
+  font-weight:700;
+}
+
+.rag-panel h2 {
+  margin:7px 0 5px;
+  font-size:28px;
+}
+
+.rag-panel-head p {
+  margin:0;
+  color:#a9a1b8;
+  max-width:680px;
+  line-height:1.6;
+}
+
+.rag-badge {
+  padding:7px 11px;
+  border-radius:999px;
+  border:1px solid rgba(196,181,253,.3);
+  color:#ddd6fe;
+  font-size:11px;
+  letter-spacing:.12em;
+  font-weight:800;
+}
+
+.rag-questions {
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin:22px 0 14px;
+}
+
+.rag-questions button {
+  border:1px solid rgba(255,255,255,.1);
+  background:rgba(255,255,255,.035);
+  color:#d8d1e2;
+  border-radius:999px;
+  padding:9px 13px;
+  cursor:pointer;
+}
+
+.rag-questions button:hover {
+  border-color:rgba(196,181,253,.45);
+  background:rgba(124,58,237,.12);
+}
+
+.rag-input-row {
+  display:flex;
+  gap:10px;
+}
+
+#ragQuestion {
+  flex:1;
+  min-width:0;
+  border:1px solid rgba(255,255,255,.12);
+  background:#09070d;
+  color:#fff;
+  border-radius:14px;
+  padding:14px 16px;
+  outline:none;
+}
+
+#ragQuestion:focus {
+  border-color:#a78bfa;
+}
+
+#ragAskButton {
+  border:0;
+  border-radius:14px;
+  padding:0 18px;
+  background:#7c3aed;
+  color:#fff;
+  font-weight:800;
+  cursor:pointer;
+}
+
+#ragAskButton:disabled {
+  opacity:.55;
+  cursor:wait;
+}
+
+.rag-answer {
+  margin-top:18px;
+  padding:20px;
+  border-radius:16px;
+  background:rgba(255,255,255,.035);
+  border:1px solid rgba(255,255,255,.08);
+  color:#eeeaf4;
+  line-height:1.7;
+  white-space:pre-wrap;
+}
+
+.rag-sources {
+  margin-top:12px;
+  color:#a9a1b8;
+  font-size:12px;
+}
+
+.rag-sources strong {
+  color:#d8d1e2;
+}
+
+.rag-sources span {
+  display:inline-block;
+  margin:6px 5px 0 0;
+  padding:5px 8px;
+  border-radius:8px;
+  background:rgba(255,255,255,.05);
+}
+
+.hidden { display:none !important; }
+
+@media (max-width:700px) {
+  .rag-panel { padding:20px; }
+  .rag-input-row { flex-direction:column; }
+  #ragAskButton { min-height:48px; }
+}

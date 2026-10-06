@@ -1,0 +1,26 @@
+<!-- Epochs 1.5 — paste this inside the results section, after Song DNA -->
+<section class="rag-panel" id="askEpochsPanel">
+  <div class="rag-panel-head">
+    <div>
+      <div class="rag-kicker">EPOCHS 1.5 · RETRIEVAL-AUGMENTED INTELLIGENCE</div>
+      <h2>Ask Epochs</h2>
+      <p>Ask about this analysis. Epochs retrieves project and music-domain knowledge before answering.</p>
+    </div>
+    <span class="rag-badge">RAG</span>
+  </div>
+
+  <div class="rag-questions">
+    <button type="button" data-rag-question="Why did Epochs classify this song this way?">Why this genre?</button>
+    <button type="button" data-rag-question="How should I interpret the BPM of this song?">Explain BPM</button>
+    <button type="button" data-rag-question="How does this song's energy compare with the FMA reference dataset?">Explain energy</button>
+    <button type="button" data-rag-question="What audio features contribute to the classifier?">Explain the features</button>
+  </div>
+
+  <div class="rag-input-row">
+    <input id="ragQuestion" type="text" placeholder="Ask something about this Song DNA..." autocomplete="off">
+    <button id="ragAskButton" type="button">Ask Epochs <span>→</span></button>
+  </div>
+
+  <div id="ragAnswer" class="rag-answer hidden"></div>
+  <div id="ragSources" class="rag-sources hidden"></div>
+</section>

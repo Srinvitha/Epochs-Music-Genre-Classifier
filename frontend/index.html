@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Epochs — Song DNA Analyzer</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="rag/rag.css">
+</head>
+<body>
+  <div class="ambient ambient-a"></div>
+  <div class="ambient ambient-b"></div>
+
+  <header class="topbar shell">
+    <a class="brand" href="#">
+      <span class="brand-icon">E</span>
+      <span>epoch<span class="brand-dot">.</span></span>
+    </a>
+    <div class="topbar-right">
+      <span class="status-dot"></span>
+      <span>AI AUDIO LAB</span>
+      <span class="version">v1.0</span>
+    </div>
+  </header>
+
+  <main class="shell">
+    <section class="hero">
+      <div class="hero-copy">
+        <div class="eyebrow"><span></span> MUSIC INTELLIGENCE</div>
+        <h1>Meet the <em>DNA</em><br>inside your music.</h1>
+        <p>Upload a track or record one live. Epochs extracts its sonic fingerprint — genre, tempo, energy and spectral character.</p>
+        <div class="hero-pills">
+          <span>8 genres</span>
+          <span>61 audio features</span>
+          <span>30 sec model windows</span>
+        </div>
+      </div>
+
+      <div class="analyzer-card" id="analyzerCard">
+        <div class="mode-switch">
+          <button class="mode active" data-mode="upload">UPLOAD</button>
+          <button class="mode" data-mode="record">RECORD</button>
+        </div>
+
+        <div class="mode-panel upload-panel" id="uploadPanel">
+          <div class="drop-zone" id="dropZone">
+            <div class="drop-orb">♫</div>
+            <h2>Drop your track here</h2>
+            <p>or choose an audio file from your device</p>
+            <input id="audioInput" type="file" accept=".mp3,.wav,.flac,.ogg,.m4a,audio/*" hidden>
+            <button class="primary-btn" id="chooseButton">Choose audio <span>↗</span></button>
+            <div class="file-name" id="fileName">MP3 · WAV · FLAC · OGG · M4A · UP TO 5 MIN</div>
+          </div>
+        </div>
+
+        <div class="mode-panel record-panel hidden" id="recordPanel">
+          <div class="record-visual">
+            <div class="record-ring" id="recordRing"><div class="mic">●</div></div>
+            <div class="record-time" id="recordTime">00:00</div>
+            <div class="record-limit">MAX 01:30</div>
+          </div>
+          <div class="live-bars" id="liveBars"></div>
+          <button class="record-btn" id="recordButton"><span class="record-dot"></span> Start recording</button>
+          <p class="record-hint">Allow microphone access when prompted.</p>
+        </div>
+
+        <div class="selected-track hidden" id="selectedTrack">
+          <div class="track-symbol">♪</div>
+          <div class="track-info">
+            <strong id="selectedName">Track</strong>
+            <span id="selectedMeta">Ready to analyze</span>
+          </div>
+          <button class="clear-btn" id="clearButton">×</button>
+        </div>
+
+        <button class="analyze-btn" id="analyzeButton" disabled>
+          <span>Analyze Song</span><b>→</b>
+        </button>
+        <div class="analyze-note"><span>✦</span> Feature extraction + SVM analysis</div>
+      </div>
+    </section>
+
+    <section class="loading hidden" id="loading">
+      <div class="loading-core">
+        <div class="loading-orbit"></div>
+        <div class="loading-e">E</div>
+      </div>
+      <div class="loading-copy">
+        <div class="eyebrow"><span></span> PROCESSING AUDIO</div>
+        <h2>Decoding your song<span class="dots">...</span></h2>
+        <p>Extracting its sonic fingerprint and building your Song DNA.</p>
+      </div>
+    </section>
+
+    <section class="results hidden" id="results">
+      <div class="results-head">
+        <div>
+          <div class="eyebrow"><span></span> ANALYSIS COMPLETE</div>
+          <h2 id="resultFilename">Song DNA</h2>
+        </div>
+        <button class="ghost-btn" id="newAnalysisButton">＋ Analyze another</button>
+      </div>
+
+      <div class="dna-grid">
+        <article class="dna-card dna-main">
+          <div class="card-kicker">PRIMARY GENRE</div>
+          <div class="genre-line">
+            <h3 id="genre">—</h3>
+            <span class="confidence" id="confidence">—%</span>
+          </div>
+          <div class="confidence-label">model confidence</div>
+          <div class="genre-track"><div id="confidenceBar"></div></div>
+        </article>
+
+        <article class="dna-card metric-card info-card" id="tempoCard" data-info="tempo" tabindex="0" role="button" aria-label="Explain tempo">
+          <div class="card-kicker">TEMPO <span class="info-icon" aria-hidden="true">i</span></div>
+          <div class="big-number" id="bpm">—</div><span class="unit">BPM</span>
+          <div class="metric-caption">estimated beat rate</div>
+        </article>
+
+        <article class="dna-card metric-card info-card" id="energyCard" data-info="energy" tabindex="0" role="button" aria-label="Explain audio energy">
+          <div class="card-kicker">ENERGY <span class="info-icon" aria-hidden="true">i</span></div>
+          <div class="big-number" id="energy">—</div>
+          <div class="metric-caption">RMS energy</div>
+        </article>
+
+        <article class="dna-card metric-card info-card" id="durationCard" data-info="duration" tabindex="0" role="button" aria-label="Explain analyzed duration">
+          <div class="card-kicker">DURATION <span class="info-icon" aria-hidden="true">i</span></div>
+          <div class="big-number" id="duration">—</div><span class="unit">SEC</span>
+          <div class="metric-caption">full analyzed audio</div>
+          <div class="analysis-meta" id="segmentsAnalyzed">Single audio window analyzed</div>
+        </article>
+      </div>
+
+      <div class="analysis-grid">
+        <article class="panel probabilities-panel">
+          <div class="panel-head">
+            <div><div class="card-kicker">CLASSIFIER OUTPUT</div><h3>Genre DNA</h3></div>
+            <span class="model-chip">SVM · RBF</span>
+          </div>
+          <div id="probabilities"></div>
+        </article>
+
+        <article class="panel waveform-panel">
+          <div class="panel-head">
+            <div><div class="card-kicker">TIME DOMAIN</div><h3>Waveform</h3></div>
+            <span class="panel-tag" id="waveformDuration">— SEC</span>
+          </div>
+          <canvas id="waveformCanvas"></canvas>
+        </article>
+      </div>
+
+      <article class="panel spectro-panel">
+        <div class="panel-head">
+          <div><div class="card-kicker">FREQUENCY DOMAIN</div><h3>Mel-Spectrogram</h3></div>
+          <span class="panel-tag" id="spectrogramDuration">— SEC</span>
+        </div>
+        <div class="spectro-wrap"><img id="spectrogram" alt="Mel-spectrogram"></div>
+      </article>
+
+      <section class="rag-panel" id="askEpochsPanel">
+        <div class="rag-panel-head">
+          <div>
+            <div class="rag-kicker">EPOCHS 1.5 · RETRIEVAL-AUGMENTED INTELLIGENCE</div>
+            <h2>Ask Epochs</h2>
+            <p>Ask about this analysis. Epochs retrieves project and music-domain knowledge before answering.</p>
+          </div>
+          <span class="rag-badge">RAG</span>
+        </div>
+
+        <div class="rag-questions">
+          <button type="button" data-rag-question="Why did Epochs classify this song this way?">Why this genre?</button>
+          <button type="button" data-rag-question="How should I interpret the BPM of this song?">Explain BPM</button>
+          <button type="button" data-rag-question="How does this song's energy compare with the FMA reference dataset?">Explain energy</button>
+          <button type="button" data-rag-question="What audio features contribute to the classifier?">Explain the features</button>
+        </div>
+
+        <div class="rag-input-row">
+          <input id="ragQuestion" type="text" placeholder="Ask something about this Song DNA..." autocomplete="off">
+          <button id="ragAskButton" type="button">Ask Epochs <span>→</span></button>
+        </div>
+
+        <div id="ragAnswer" class="rag-answer hidden" aria-live="polite"></div>
+        <div id="ragSources" class="rag-sources hidden"></div>
+      </section>
+
+      <section class="future-banner">
+        <div class="future-copy">
+          <div class="eyebrow"><span></span> EPOCHS 2.0 · GENERATIVE AI</div>
+          <h2>Understand music.<br><em>Then create it.</em></h2>
+          <p>Turn Song DNA into a controllable creative blueprint — choose genre, tempo and energy, then generate original beats or backing tracks in the next phase.</p>
+        </div>
+        <div class="dna-orbit">
+          <div class="orbit-ring r1"></div><div class="orbit-ring r2"></div><div class="orbit-core">DNA</div>
+          <span class="orbit-tag t1">GENRE</span><span class="orbit-tag t2">BPM</span><span class="orbit-tag t3">ENERGY</span>
+        </div>
+      </section>
+    </section>
+
+    <footer>
+      <span>Epochs</span><span>•</span><span>FMA Small</span><span>•</span><span>Artist-disjoint evaluation</span>
+      <span class="footer-right">Music intelligence, one track at a time.</span>
+    </footer>
+  </main>
+
+  <div class="metric-modal" id="metricModal" aria-hidden="true">
+    <div class="metric-modal-backdrop" id="metricModalBackdrop"></div>
+    <div class="metric-modal-box" role="dialog" aria-modal="true" aria-labelledby="metricModalTitle" aria-describedby="metricModalMeaning" tabindex="-1">
+      <button class="metric-modal-close" id="metricModalClose" aria-label="Close explanation">×</button>
+      <div class="metric-modal-icon" id="metricModalIcon" aria-hidden="true">♪</div>
+      <div class="metric-modal-kicker">UNDERSTANDING YOUR SONG</div>
+      <h2 id="metricModalTitle">Tempo</h2>
+      <div class="metric-modal-result">
+        <span id="metricModalValue">—</span>
+        <span id="metricModalUnit"></span>
+      </div>
+      <div class="metric-modal-section">
+        <h3>What is it?</h3>
+        <p id="metricModalWhat"></p>
+      </div>
+      <div class="metric-modal-section">
+        <h3>What does yours mean?</h3>
+        <p id="metricModalMeaning"></p>
+      </div>
+      <div class="metric-modal-note" id="metricModalNote"></div>
+    </div>
+  </div>
+
+  <div class="toast hidden" id="toast"></div>
+  <script src="script.js"></script>
+  <script src="rag/rag-ui.js"></script>
+</body>
+</html>
