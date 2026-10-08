@@ -1,6 +1,20 @@
 const API_URL = "http://127.0.0.1:8000";
 const MAX_RECORDING_TIME = 90;
 
+const GENRE_ART = {
+  "Electronic": ["electronic-1.png", "electronic-2.png", "electronic-3.png"],
+  "Experimental": ["experimental-1.png", "experimental-2.png", "experimental-3.png"],
+  "Folk": ["folk-1.png", "folk-2.png", "folk-3.png"],
+  "Hip-Hop": ["hip-hop-1.png", "hip-hop-2.png", "hip-hop-3.png"],
+  "Instrumental": ["instrumental-1.png", "instrumental-2.png", "instrumental-3.png"],
+  "International": ["international-1.png", "international-2.png", "international-3.png"],
+  "Pop": ["pop-1.png", "pop-2.png", "pop-3.png"],
+  "Rock": ["rock-1.png", "rock-2.png", "rock-3.png"]
+};
+
+let waveformAnimationFrame = null;
+let activeGenreArtworkIndex = 0;
+
 const $ = (id) => document.getElementById(id);
 
 const audioInput = $("audioInput");
@@ -42,6 +56,186 @@ let currentMode = "upload";
 for (let i = 0; i < 34; i++) {
   const bar = document.createElement("i");
   liveBars.appendChild(bar);
+}
+
+function initGrainWave() {
+  const canvas = document.getElementById("grainWaveCanvas");
+  const hero = document.getElementById("hero");
+  if (!canvas || !hero) return;
+
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return;
+
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const state = { width: 0, height: 0, dpr: 1, particles: [], signature: [], raf: null };
+  const textCanvas = document.createElement("canvas");
+  const textCtx = textCanvas.getContext("2d", { willReadFrequently: true });
+
+  function resize() {
+    const rect = hero.getBoundingClientRect();
+    state.dpr = Math.min(window.devicePixelRatio || 1, 1.75);
+    state.width = Math.max(1, rect.width);
+    state.height = Math.max(1, rect.height);
+    canvas.width = Math.floor(state.width * state.dpr);
+    canvas.height = Math.floor(state.height * state.dpr);
+    canvas.style.width = `${state.width}px`;
+    canvas.style.height = `${state.height}px`;
+    ctx.setTransform(state.dpr, 0, 0, state.dpr, 0, 0);
+    buildParticles();
+  }
+
+  function buildParticles() {
+    const count = Math.min(2200, Math.max(900, Math.floor((state.width * state.height) / 520)));
+    state.particles = Array.from({ length: count }, () => ({
+      x: Math.random() * state.width,
+      y: Math.random() * state.height,
+      size: .35 + Math.random() * 1.25,
+      alpha: .07 + Math.random() * .22,
+      phase: Math.random() * Math.PI * 2,
+      speed: .45 + Math.random() * 1.15,
+      band: Math.random() * 3,
+      cool: Math.random() > .72
+    }));
+
+    /* The signature is literally made from the same moving dots as the sand field. */
+    const sw = Math.max(500, Math.floor(state.width * .42));
+    const sh = Math.max(150, Math.floor(state.height * .22));
+    textCanvas.width = sw;
+    textCanvas.height = sh;
+    textCtx.clearRect(0, 0, sw, sh);
+    textCtx.fillStyle = "white";
+    textCtx.font = `700 ${Math.max(34, Math.min(72, sw / 10))}px Inter, Arial, sans-serif`;
+    textCtx.textAlign = "center";
+    textCtx.textBaseline = "middle";
+    textCtx.fillText("Srinvitha", sw / 2, sh / 2);
+
+    const pixels = textCtx.getImageData(0, 0, sw, sh).data;
+    const candidates = [];
+    for (let y = 0; y < sh; y += 3) {
+      for (let x = 0; x < sw; x += 3) {
+        if (pixels[(y * sw + x) * 4 + 3] > 80) candidates.push({ x, y });
+      }
+    }
+
+    state.signature = [];
+    const target = Math.min(330, candidates.length);
+    for (let i = 0; i < target; i += 1) {
+      const point = candidates[Math.floor(Math.random() * candidates.length)];
+      state.signature.push({
+        x: state.width * .72 + (point.x / sw - .5) * state.width * .27,
+        y: state.height * .73 + (point.y / sh - .5) * state.height * .13,
+        size: .45 + Math.random() * .75,
+        phase: Math.random() * Math.PI * 2
+      });
+    }
+  }
+
+  function draw(time) {
+    const t = time * .00035;
+    ctx.clearRect(0, 0, state.width, state.height);
+
+    for (const p of state.particles) {
+      const wave = Math.sin(p.x * .010 + t * p.speed + p.phase) * (10 + p.band * 5)
+        + Math.sin(p.x * .021 - t * .8 + p.phase) * 4;
+      const y = p.y + wave + Math.sin(t * .7 + p.phase) * .7;
+      const x = p.x + Math.sin(t + p.phase) * 2;
+      ctx.globalAlpha = p.alpha * (.72 + .28 * Math.sin(t * 2 + p.phase));
+      ctx.fillStyle = p.cool ? "#d6b9ff" : "#a987e8";
+      ctx.beginPath();
+      ctx.arc(x, y, p.size, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    /* Same grain, same wave motion, slightly denser: the Easter egg resolves only on inspection. */
+    for (const p of state.signature) {
+      const wave = Math.sin(p.x * .010 + t * 1.15 + p.phase) * 9
+        + Math.sin(p.x * .022 - t + p.phase) * 3;
+      ctx.globalAlpha = .14 + .055 * Math.sin(t * 2 + p.phase);
+      ctx.fillStyle = "#e7d9ff";
+      ctx.beginPath();
+      ctx.arc(p.x, p.y + wave, p.size, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+
+    if (!reduceMotion) state.raf = requestAnimationFrame(draw);
+  }
+
+  window.addEventListener("resize", resize, { passive: true });
+  resize();
+  draw(reduceMotion ? 0 : performance.now());
+}
+
+function initAtmosphere() {
+  const particleField = $("particleField");
+  const cursorGlow = document.querySelector(".cursor-glow");
+
+  if (particleField) {
+    const fragment = document.createDocumentFragment();
+    for (let i = 0; i < 34; i += 1) {
+      const particle = document.createElement("i");
+      particle.className = "particle";
+      particle.style.setProperty("--x", `${Math.random() * 100}%`);
+      particle.style.setProperty("--y", `${Math.random() * 100}%`);
+      particle.style.setProperty("--size", `${1 + Math.random() * 2.8}px`);
+      particle.style.setProperty("--delay", `${Math.random() * -12}s`);
+      particle.style.setProperty("--duration", `${8 + Math.random() * 12}s`);
+      fragment.appendChild(particle);
+    }
+    particleField.appendChild(fragment);
+  }
+
+  if (cursorGlow && window.matchMedia("(pointer:fine)").matches) {
+    window.addEventListener("pointermove", (event) => {
+      cursorGlow.style.transform = `translate3d(${event.clientX - 150}px, ${event.clientY - 150}px, 0)`;
+    }, { passive: true });
+  }
+
+  const revealItems = document.querySelectorAll(".dna-card, .panel, .rag-panel, .thinking-section, .thinking-heading, .pipeline-node");
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("in-view");
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  revealItems.forEach((item) => {
+    item.classList.add("reveal-on-scroll");
+    revealObserver.observe(item);
+  });
+}
+
+function setGenreArtwork(genre) {
+  const artwork = $("genreArtwork");
+  const label = $("genreArtLabel");
+  const wrap = $("dnaArtWrap");
+  const files = GENRE_ART[genre] || GENRE_ART.Electronic;
+  activeGenreArtworkIndex = Math.floor(Math.random() * files.length);
+  const chosen = files[activeGenreArtworkIndex];
+
+  if (artwork) {
+    artwork.classList.remove("art-enter");
+    void artwork.offsetWidth;
+    artwork.src = `assets/genres/${chosen}`;
+    artwork.alt = `${genre} visual artwork`;
+    artwork.classList.add("art-enter");
+  }
+  if (label) label.textContent = `${genre.toUpperCase()} · SONG DNA`;
+  if (wrap) wrap.dataset.genre = genre.toLowerCase();
+}
+
+function cycleGenreArtwork(genre) {
+  const artwork = $("genreArtwork");
+  const files = GENRE_ART[genre];
+  if (!artwork || !files || files.length < 2) return;
+  activeGenreArtworkIndex = (activeGenreArtworkIndex + 1) % files.length;
+  artwork.classList.add("art-crossfade");
+  setTimeout(() => {
+    artwork.src = `assets/genres/${files[activeGenreArtworkIndex]}`;
+    artwork.classList.remove("art-crossfade");
+    artwork.classList.add("art-enter");
+  }, 260);
 }
 
 function showToast(message) {
@@ -316,7 +510,11 @@ function renderResults(data) {
   $("resultFilename").textContent = data.filename;
   $("genre").textContent = data.genre;
   $("confidence").textContent = `${Number(data.confidence).toFixed(2)}%`;
-  $("confidenceBar").style.width = `${Math.min(Number(data.confidence), 100)}%`;
+  $("confidenceBar").style.width = "0%";
+  setGenreArtwork(data.genre);
+  setTimeout(() => {
+    $("confidenceBar").style.width = `${Math.min(Number(data.confidence), 100)}%`;
+  }, 220);
   $("bpm").textContent = Number(data.bpm).toFixed(1);
   $("energy").textContent = Number(data.energy).toFixed(4);
   const duration = Number(data.duration ?? data.duration_seconds);
@@ -335,7 +533,13 @@ function renderResults(data) {
   $("spectrogram").src =
     `data:image/png;base64,${data.mel_spectrogram}`;
 
-  window.scrollTo({ top: 0, behavior: "smooth" });
+  results.classList.remove("results-live");
+  void results.offsetWidth;
+  results.classList.add("results-live");
+  results.scrollIntoView({ behavior: "smooth", block: "start" });
+
+  setTimeout(() => cycleGenreArtwork(data.genre), 4200);
+  setTimeout(() => cycleGenreArtwork(data.genre), 8400);
 }
 
 function renderProbabilities(data) {
@@ -345,6 +549,8 @@ function renderProbabilities(data) {
   Object.entries(data).forEach(([name, value]) => {
     const row = document.createElement("div");
     row.className = "probability-row";
+    row.dataset.genre = name;
+    row.style.setProperty("--delay", `${Math.min(container.children.length, 7) * 80}ms`);
     row.innerHTML = `
       <div class="probability-head">
         <span>${name}</span>
@@ -360,64 +566,82 @@ function renderProbabilities(data) {
 
 function drawWaveform(values) {
   const canvas = $("waveformCanvas");
+  if (!canvas || !Array.isArray(values) || !values.length) return;
+
+  window.__lastWaveform = values;
+  if (waveformAnimationFrame) cancelAnimationFrame(waveformAnimationFrame);
+
   const rect = canvas.getBoundingClientRect();
   const dpr = window.devicePixelRatio || 1;
-
-  canvas.width = rect.width * dpr;
-  canvas.height = rect.height * dpr;
-
-  const ctx = canvas.getContext("2d");
-  ctx.scale(dpr, dpr);
-
-  const width = rect.width;
-  const height = rect.height;
+  const width = Math.max(1, rect.width);
+  const height = Math.max(1, rect.height);
   const mid = height / 2;
 
-  ctx.clearRect(0, 0, width, height);
+  canvas.width = width * dpr;
+  canvas.height = height * dpr;
+  const ctx = canvas.getContext("2d");
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-  const gradient = ctx.createLinearGradient(0, 0, width, 0);
-  gradient.addColorStop(0, "#7c3aed");
-  gradient.addColorStop(0.5, "#c4b5fd");
-  gradient.addColorStop(1, "#e879f9");
+  const step = Math.max(1, Math.floor(values.length / width));
+  const draw = (timestamp) => {
+    ctx.clearRect(0, 0, width, height);
 
-  ctx.strokeStyle = gradient;
-  ctx.lineWidth = 1.4;
-  ctx.beginPath();
+    const bg = ctx.createLinearGradient(0, 0, width, 0);
+    bg.addColorStop(0, "rgba(124,58,237,.02)");
+    bg.addColorStop(.5, "rgba(196,181,253,.045)");
+    bg.addColorStop(1, "rgba(232,121,249,.02)");
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, width, height);
 
-  const step = Math.max(1, Math.floor(values.length / Math.max(1, width)));
+    ctx.strokeStyle = "rgba(255,255,255,.06)";
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(0, mid);
+    ctx.lineTo(width, mid);
+    ctx.stroke();
 
-  for (let x = 0; x < width; x++) {
-    const index = Math.min(values.length - 1, Math.floor(x * step));
-    const y = mid - (values[index] || 0) * (height * 0.42);
+    const gradient = ctx.createLinearGradient(0, 0, width, 0);
+    gradient.addColorStop(0, "#7c3aed");
+    gradient.addColorStop(.48, "#c4b5fd");
+    gradient.addColorStop(1, "#e879f9");
 
-    if (x === 0) ctx.moveTo(x, y);
-    else ctx.lineTo(x, y);
-  }
+    ctx.strokeStyle = gradient;
+    ctx.lineWidth = 1.7;
+    ctx.shadowBlur = 12;
+    ctx.shadowColor = "rgba(167,139,250,.28)";
+    ctx.beginPath();
 
-  ctx.stroke();
+    for (let x = 0; x < width; x += 1) {
+      const index = Math.min(values.length - 1, Math.floor(x * step));
+      const y = mid - (values[index] || 0) * (height * 0.42);
+      if (x === 0) ctx.moveTo(x, y);
+      else ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+    ctx.shadowBlur = 0;
 
-  ctx.globalAlpha = 0.22;
-  ctx.strokeStyle = "#a78bfa";
-  ctx.beginPath();
+    const progress = ((timestamp || 0) % 9000) / 9000;
+    const scanX = progress * width;
+    const scan = ctx.createLinearGradient(scanX - 40, 0, scanX + 40, 0);
+    scan.addColorStop(0, "rgba(196,181,253,0)");
+    scan.addColorStop(.5, "rgba(232,121,249,.38)");
+    scan.addColorStop(1, "rgba(196,181,253,0)");
+    ctx.fillStyle = scan;
+    ctx.fillRect(scanX - 40, 0, 80, height);
 
-  for (let x = 0; x < width; x++) {
-    const index = Math.min(values.length - 1, Math.floor(x * step));
-    const y = mid + (values[index] || 0) * (height * 0.42);
+    ctx.strokeStyle = "rgba(238,232,255,.8)";
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(scanX, 0);
+    ctx.lineTo(scanX, height);
+    ctx.stroke();
 
-    if (x === 0) ctx.moveTo(x, y);
-    else ctx.lineTo(x, y);
-  }
+    waveformAnimationFrame = requestAnimationFrame(draw);
+  };
 
-  ctx.stroke();
-  ctx.globalAlpha = 1;
-
-  ctx.strokeStyle = "#ffffff10";
-  ctx.lineWidth = 1;
-  ctx.beginPath();
-  ctx.moveTo(0, mid);
-  ctx.lineTo(width, mid);
-  ctx.stroke();
+  waveformAnimationFrame = requestAnimationFrame(draw);
 }
+
 
 newAnalysisButton.addEventListener("click", () => {
   clearSelected();
@@ -599,6 +823,9 @@ metricModal?.addEventListener("keydown", (event) => {
     metricModalClose.focus();
   }
 });
+
+initGrainWave();
+initAtmosphere();
 
 document.addEventListener("keydown", (event) => {
   if (event.key === "Escape") {

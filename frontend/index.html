@@ -8,6 +8,9 @@
   <link rel="stylesheet" href="rag/rag.css">
 </head>
 <body>
+  <div class="noise-layer" aria-hidden="true"></div>
+  <div class="cursor-glow" aria-hidden="true"></div>
+  <div class="particle-field" id="particleField" aria-hidden="true"></div>
   <div class="ambient ambient-a"></div>
   <div class="ambient ambient-b"></div>
 
@@ -33,7 +36,11 @@
   <main class="shell">
     <section class="hero" id="hero">
       <div class="hero-backdrop" aria-hidden="true"></div>
+      <canvas class="grain-wave-canvas" id="grainWaveCanvas" aria-hidden="true"></canvas>
       <div class="hero-grid-glow" aria-hidden="true"></div>
+      <div class="hero-scanline" aria-hidden="true"></div>
+      <div class="hero-signal-wave wave-one" aria-hidden="true"></div>
+      <div class="hero-signal-wave wave-two" aria-hidden="true"></div>
 
       <div class="hero-copy">
         <div class="hero-status"><span class="status-pulse"></span> SIGNAL ONLINE · MUSIC INTELLIGENCE</div>
@@ -55,6 +62,7 @@
       </div>
 
       <div class="analyzer-card" id="analyzerCard">
+        <div class="portal-aura" aria-hidden="true"></div>
         <div class="mode-switch">
           <button class="mode active" data-mode="upload">UPLOAD</button>
           <button class="mode" data-mode="record">RECORD</button>
@@ -62,6 +70,8 @@
 
         <div class="mode-panel upload-panel" id="uploadPanel">
           <div class="drop-zone" id="dropZone">
+            <div class="portal-ring portal-ring-a" aria-hidden="true"></div>
+            <div class="portal-ring portal-ring-b" aria-hidden="true"></div>
             <div class="drop-orb">♫</div>
             <h2>Drop your track here</h2>
             <p>or choose an audio file from your device</p>
@@ -125,13 +135,22 @@
 
       <div class="dna-grid">
         <article class="dna-card dna-main">
-          <div class="card-kicker">PRIMARY GENRE</div>
-          <div class="genre-line">
-            <h3 id="genre">—</h3>
-            <span class="confidence" id="confidence">—%</span>
+          <div class="dna-art-wrap" id="dnaArtWrap">
+            <img id="genreArtwork" alt="Genre artwork" loading="eager">
+            <div class="dna-art-vignette"></div>
+            <div class="dna-art-scan"></div>
+            <div class="dna-art-meta"><span id="genreArtLabel">SONG DNA</span><span>01 / 03</span></div>
           </div>
-          <div class="confidence-label">model confidence</div>
-          <div class="genre-track"><div id="confidenceBar"></div></div>
+          <div class="dna-main-copy">
+            <div class="card-kicker">PRIMARY GENRE</div>
+            <div class="genre-line">
+              <h3 id="genre">—</h3>
+              <span class="confidence" id="confidence">—%</span>
+            </div>
+            <div class="confidence-label">model confidence</div>
+            <div class="genre-track"><div id="confidenceBar"></div></div>
+            <div class="dna-status"><span></span> SONG DNA LOCKED</div>
+          </div>
         </article>
 
         <article class="dna-card metric-card info-card" id="tempoCard" data-info="tempo" tabindex="0" role="button" aria-label="Explain tempo">
@@ -206,15 +225,24 @@
         <div id="ragSources" class="rag-sources hidden"></div>
       </section>
 
-      <section class="future-banner" id="howEpochsWorks">
-        <div class="future-copy">
-          <div class="eyebrow"><span></span> EPOCHS 2.0 · GENERATIVE AI</div>
-          <h2>Understand music.<br><em>Then create it.</em></h2>
-          <p>Turn Song DNA into a controllable creative blueprint — choose genre, tempo and energy, then generate original beats or backing tracks in the next phase.</p>
+      <section class="thinking-section" id="howEpochsWorks">
+        <div class="thinking-heading">
+          <div class="eyebrow"><span></span> HOW EPOCHS THINKS</div>
+          <h2>From raw audio<br><em>to meaningful insight.</em></h2>
+          <p>The interface is animated, but the path underneath is real: audio is processed into 61 handcrafted features, passed through the trained RBF-SVM, assembled into Song DNA, then made explainable through local RAG.</p>
         </div>
-        <div class="dna-orbit">
-          <div class="orbit-ring r1"></div><div class="orbit-ring r2"></div><div class="orbit-core">DNA</div>
-          <span class="orbit-tag t1">GENRE</span><span class="orbit-tag t2">BPM</span><span class="orbit-tag t3">ENERGY</span>
+        <div class="pipeline" aria-label="Epochs analysis pipeline">
+          <article class="pipeline-node"><span>01</span><b>Audio input</b><small>Upload or record</small></article>
+          <i class="pipeline-link">→</i>
+          <article class="pipeline-node"><span>02</span><b>Signal processing</b><small>Clean & analyze</small></article>
+          <i class="pipeline-link">→</i>
+          <article class="pipeline-node"><span>03</span><b>61 features</b><small>MFCC · Chroma · Tempo</small></article>
+          <i class="pipeline-link">→</i>
+          <article class="pipeline-node"><span>04</span><b>RBF-SVM</b><small>Genre probabilities</small></article>
+          <i class="pipeline-link">→</i>
+          <article class="pipeline-node"><span>05</span><b>Song DNA</b><small>Genre · BPM · Energy</small></article>
+          <i class="pipeline-link">→</i>
+          <article class="pipeline-node"><span>06</span><b>Ask Epochs</b><small>Grounded RAG</small></article>
         </div>
       </section>
     </section>
