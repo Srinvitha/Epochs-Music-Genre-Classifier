@@ -13,6 +13,7 @@
     <div class="epoch-splash-vignette"></div>
     <div class="epoch-splash-progress"><span></span></div>
   </div>
+  <audio id="epochAudioPlayer" preload="auto" hidden></audio>
   <div class="noise-layer" aria-hidden="true"></div>
   <div class="cursor-glow" aria-hidden="true"></div>
   <div class="particle-field" id="particleField" aria-hidden="true"></div>
@@ -21,12 +22,12 @@
 
   <header class="topbar shell">
     <a class="brand" href="#" aria-label="Epochs home">
-      <span class="brand-icon">E</span>
-      <span>EPOCH<span class="brand-dot">S</span></span>
+      <img src="assets/epochs-logo.png" alt="Epochs logo" class="brand-icon-img">
+      <img src="assets/epochs-header.png" alt="Epochs" class="brand-wordmark-img">
     </a>
 
     <nav class="topnav" aria-label="Primary navigation">
-      <a href="#analyzerCard" id="navAnalyze">Analyze</a>
+      <a href="#analyzerCard" id="navAnalyze">Analysis</a>
       <a href="#howEpochsWorks" class="future-nav-link">How it works</a>
       <a href="#askEpochsPanel" class="future-nav-link">Ask Epochs</a>
     </nav>
@@ -37,6 +38,34 @@
       <span class="version">v1.0</span>
     </div>
   </header>
+
+  <div class="epoch-audio-controls">
+    <button
+      id="epochMuteButton"
+      class="audio-toggle"
+      type="button"
+      aria-pressed="false"
+      aria-label="Mute audio"
+    >
+      <span id="epochMuteIcon" aria-hidden="true">♫</span>
+      <span id="epochMuteLabel" class="audio-toggle-label">
+        Audio on
+      </span>
+    </button>
+    <div class="epoch-volume-control">
+      <label for="epochVolume">Volume</label>
+      <input
+        id="epochVolume"
+        type="range"
+        min="0"
+        max="50"
+        value="15"
+        step="1"
+        aria-label="Background music volume, maximum 50 percent"
+      >
+      <span id="epochVolumeValue">15%</span>
+    </div>
+  </div>
 
   <main class="shell">
     <section class="hero" id="hero">
@@ -120,7 +149,9 @@
     <section class="loading hidden" id="loading">
       <div class="loading-core">
         <div class="loading-orbit"></div>
-        <div class="loading-e">E</div>
+        <div class="loading-logo">
+          <img src="assets/epochs-logo.png" alt="Epochs">
+        </div>
       </div>
       <div class="loading-copy">
         <div class="eyebrow"><span></span> PROCESSING AUDIO</div>
@@ -158,7 +189,7 @@
 
         <article class="dna-card metric-card info-card" id="tempoCard" data-info="tempo" tabindex="0" role="button" aria-label="Explain tempo">
           <div class="card-kicker">TEMPO <span class="info-icon" aria-hidden="true">i</span></div>
-          <div class="big-number" id="bpm">—</div><span class="unit">BPM</span>
+          <div class="metric-value"><span class="big-number" id="bpm">—</span><span class="unit">BPM</span></div>
           <div class="metric-caption">estimated beat rate</div>
         </article>
 
@@ -170,7 +201,7 @@
 
         <article class="dna-card metric-card info-card" id="durationCard" data-info="duration" tabindex="0" role="button" aria-label="Explain analyzed duration">
           <div class="card-kicker">DURATION <span class="info-icon" aria-hidden="true">i</span></div>
-          <div class="big-number" id="duration">—</div><span class="unit">SEC</span>
+          <div class="metric-value"><span class="big-number" id="duration">—</span><span class="unit">SEC</span></div>
           <div class="metric-caption">full analyzed audio</div>
           <div class="analysis-meta" id="segmentsAnalyzed">Single audio window analyzed</div>
         </article>
@@ -204,27 +235,42 @@
 
       <section class="rag-panel" id="askEpochsPanel">
         <div class="rag-panel-head">
-          <div>
-            <div class="rag-kicker">EPOCHS 1.5 · RETRIEVAL-AUGMENTED INTELLIGENCE</div>
-            <h2>Ask Epochs</h2>
-            <p>Ask about this analysis. Epochs retrieves project and music-domain knowledge before answering.</p>
+          <div class="rag-heading-group">
+            <div class="rag-kicker"><span class="rag-kicker-line"></span>EPOCHS 1.5 · INTELLIGENCE LAYER</div>
+            <div class="rag-title-row">
+              <div class="rag-orb" aria-hidden="true">
+                <span class="rag-orb-core"></span>
+                <span class="rag-orb-ring rag-orb-ring-a"></span>
+                <span class="rag-orb-ring rag-orb-ring-b"></span>
+                <span class="rag-orb-bars"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
+              </div>
+              <div>
+                <h2>Ask the music<span class="rag-title-period">.</span></h2>
+                <p>Grounded explanations for your Song DNA — retrieved from Epochs knowledge before answering.</p>
+              </div>
+            </div>
           </div>
-          <span class="rag-badge">RAG</span>
+          <span class="rag-badge"><span class="rag-badge-dot"></span>LOCAL RAG</span>
         </div>
 
+        <div class="rag-prompt-label">EXPLORE THIS ANALYSIS <span>·</span> SELECT A STARTING POINT</div>
         <div class="rag-questions">
-          <button type="button" data-rag-question="Why did Epochs classify this song this way?">Why this genre?</button>
-          <button type="button" data-rag-question="How should I interpret the BPM of this song?">Explain BPM</button>
-          <button type="button" data-rag-question="How does this song's energy compare with the FMA reference dataset?">Explain energy</button>
-          <button type="button" data-rag-question="What audio features contribute to the classifier?">Explain the features</button>
+          <button type="button" data-rag-question="Why did Epochs classify this song this way?"><span class="rag-chip-icon">↗</span><span>Why this genre?</span></button>
+          <button type="button" data-rag-question="How should I interpret the BPM of this song?"><span class="rag-chip-icon">◷</span><span>Decode the tempo</span></button>
+          <button type="button" data-rag-question="How does this song's energy compare with the FMA reference dataset?"><span class="rag-chip-icon">∿</span><span>Read the energy</span></button>
+          <button type="button" data-rag-question="What audio features contribute to the classifier?"><span class="rag-chip-icon">✳</span><span>Explore 61 features</span></button>
         </div>
 
-        <div class="rag-input-row">
-          <input id="ragQuestion" type="text" placeholder="Ask something about this Song DNA..." autocomplete="off">
-          <button id="ragAskButton" type="button">Ask Epochs <span>→</span></button>
+        <div class="rag-input-shell">
+          <div class="rag-input-row">
+            <span class="rag-input-spark" aria-hidden="true">✳</span>
+            <input id="ragQuestion" type="text" placeholder="Ask something about this Song DNA…" autocomplete="off" aria-label="Ask Epochs about this analysis">
+            <button id="ragAskButton" type="button"><span class="rag-send-label">Ask Epochs</span><span class="rag-send-icon" aria-hidden="true">↗</span></button>
+          </div>
+          <div class="rag-input-foot"><span><span class="rag-foot-dot"></span> Answers grounded in retrieved knowledge</span><span>ENTER ↵</span></div>
         </div>
 
-        <div id="ragAnswer" class="rag-answer hidden" aria-live="polite"></div>
+        <div id="ragAnswer" class="rag-answer hidden" aria-live="polite" aria-busy="false"></div>
         <div id="ragSources" class="rag-sources hidden"></div>
       </section>
 
@@ -254,41 +300,39 @@
         <div class="thinking-conveyor" aria-label="Epochs analysis pipeline" tabindex="0">
           <button class="thinking-arrow thinking-arrow-prev" type="button" aria-label="Previous step">←</button>
           <div class="thinking-track">
-            <article class="thinking-card is-active">
-              <span class="thinking-number">01</span>
-              <div class="thinking-icon">♫</div>
-              <b>Audio input</b>
-              <small>Upload or record</small>
+            <article class="thinking-card is-active" tabindex="0" aria-label="Step 1: Audio input">
+              <span class="thinking-number">01 / INPUT</span>
+              <div class="thinking-art art-portal" aria-hidden="true">
+                <div class="portal-ring ring-a"></div><div class="portal-ring ring-b"></div><div class="portal-core">↑</div>
+                <div class="portal-wave"><i style="height:7px"></i><i style="height:12px"></i><i style="height:18px"></i><i style="height:25px"></i><i style="height:15px"></i><i style="height:9px"></i><i style="height:20px"></i><i style="height:29px"></i><i style="height:13px"></i><i style="height:8px"></i><i style="height:22px"></i><i style="height:16px"></i><i style="height:30px"></i><i style="height:11px"></i><i style="height:18px"></i><i style="height:26px"></i><i style="height:8px"></i><i style="height:15px"></i><i style="height:23px"></i><i style="height:12px"></i><i style="height:29px"></i><i style="height:17px"></i><i style="height:9px"></i><i style="height:24px"></i><i style="height:14px"></i><i style="height:31px"></i><i style="height:19px"></i><i style="height:10px"></i><i style="height:22px"></i><i style="height:13px"></i><i style="height:7px"></i></div>
+              </div>
+              <div class="thinking-copy"><b>Enter the sound studio</b><small>Upload a track or record live</small></div>
+              <span class="thinking-tag">AUDIO IN</span>
             </article>
-            <article class="thinking-card">
-              <span class="thinking-number">02</span>
-              <div class="thinking-icon">∿</div>
-              <b>Signal processing</b>
-              <small>Clean & analyze</small>
+            <article class="thinking-card" tabindex="0" aria-label="Step 2: Signal processing">
+              <span class="thinking-number">02 / SIGNAL</span>
+              <div class="thinking-art art-signal" aria-hidden="true"><svg viewBox="0 0 320 90" preserveAspectRatio="none"><path class="signal-line signal-line-back" d="M0 45 C18 45 18 18 34 18 S50 72 66 72 S82 30 98 30 S114 55 130 55 S146 12 162 12 S178 70 194 70 S210 38 226 38 S242 52 258 52 S274 25 290 25 S306 45 320 45"/><path class="signal-line" d="M0 45 C18 45 18 18 34 18 S50 72 66 72 S82 30 98 30 S114 55 130 55 S146 12 162 12 S178 70 194 70 S210 38 226 38 S242 52 258 52 S274 25 290 25 S306 45 320 45"/></svg><span class="signal-scan"></span><div class="freq-bands"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+              <div class="thinking-copy"><b>Shape the signal</b><small>Clean, segment and analyze audio</small></div><span class="thinking-tag">SIGNAL → DATA</span>
             </article>
-            <article class="thinking-card">
-              <span class="thinking-number">03</span>
-              <div class="thinking-icon">61</div>
-              <b>Audio features</b>
-              <small>MFCC · Chroma · Tempo</small>
+            <article class="thinking-card" tabindex="0" aria-label="Step 3: 61 audio features">
+              <span class="thinking-number">03 / FEATURES</span>
+              <div class="thinking-art art-constellation" aria-hidden="true"><div class="constellation-orbit orbit-one"></div><div class="constellation-orbit orbit-two"></div><i style="left:5%;top:10%"></i><i style="left:42%;top:40%"></i><i style="left:79%;top:70%"></i><i style="left:25%;top:22%"></i><i style="left:62%;top:24%"></i><i style="left:8%;top:54%"></i><i style="left:45%;top:84%"></i><i style="left:82%;top:36%"></i><i style="left:28%;top:38%"></i><i style="left:65%;top:68%"></i><i style="left:11%;top:20%"></i><i style="left:48%;top:50%"></i><i style="left:85%;top:52%"></i><i style="left:31%;top:82%"></i><i style="left:68%;top:34%"></i><i style="left:14%;top:64%"></i><i style="left:51%;top:66%"></i><i style="left:88%;top:18%"></i><i style="left:34%;top:48%"></i><i style="left:71%;top:78%"></i><i style="left:17%;top:80%"></i><i style="left:54%;top:32%"></i><i style="left:91%;top:62%"></i><i style="left:37%;top:14%"></i><i style="left:74%;top:16%"></i><i style="left:20%;top:46%"></i><i style="left:57%;top:76%"></i><i style="left:94%;top:28%"></i><i style="left:40%;top:30%"></i><i style="left:77%;top:60%"></i><i style="left:23%;top:12%"></i><i style="left:60%;top:42%"></i><i style="left:6%;top:44%"></i><i style="left:43%;top:74%"></i><i style="left:80%;top:26%"></i><i style="left:26%;top:56%"></i><i style="left:63%;top:58%"></i><i style="left:9%;top:10%"></i><span class="constellation-label label-mfcc">MFCC</span><span class="constellation-label label-chroma">CHROMA</span><span class="constellation-label label-tempo">TEMPO</span></div>
+              <div class="thinking-copy"><b>Extract 61 features</b><small>MFCC · Chroma · spectral shape · tempo</small></div><span class="thinking-tag">61 DIMENSIONS</span>
             </article>
-            <article class="thinking-card">
-              <span class="thinking-number">04</span>
-              <div class="thinking-icon">S</div>
-              <b>RBF-SVM</b>
-              <small>Genre probabilities</small>
+            <article class="thinking-card" tabindex="0" aria-label="Step 4: RBF-SVM classification">
+              <span class="thinking-number">04 / CLASSIFIER</span>
+              <div class="thinking-art art-classifier" aria-hidden="true"><div class="classifier-axis"></div><div class="classifier-row"><span>Electronic</span><i style="--w:78%"></i></div><div class="classifier-row winner"><span>Hip-Hop</span><i style="--w:58%"></i></div><div class="classifier-row"><span>Pop</span><i style="--w:34%"></i></div><div class="classifier-row"><span>Rock</span><i style="--w:19%"></i></div><span class="classifier-kernel">RBF</span></div>
+              <div class="thinking-copy"><b>Classify with RBF-SVM</b><small>Compare genre scores from the trained model</small></div><span class="thinking-tag">MODEL INFERENCE</span>
             </article>
-            <article class="thinking-card">
-              <span class="thinking-number">05</span>
-              <div class="thinking-icon">DNA</div>
-              <b>Song DNA</b>
-              <small>Genre · BPM · Energy</small>
+            <article class="thinking-card" tabindex="0" aria-label="Step 5: Song DNA">
+              <span class="thinking-number">05 / SONG DNA</span>
+              <div class="thinking-art art-dna" aria-hidden="true"><div class="dna-ring dna-ring-a"></div><div class="dna-ring dna-ring-b"></div><div class="dna-ring dna-ring-c"></div><div class="dna-core"><span>DNA</span></div><span class="dna-orbit-label dna-genre">GENRE</span><span class="dna-orbit-label dna-bpm">BPM</span><span class="dna-orbit-label dna-energy">ENERGY</span></div>
+              <div class="thinking-copy"><b>Reveal a sonic fingerprint</b><small>Genre identity · tempo · energy · visuals</small></div><span class="thinking-tag">MUSIC, MEASURED</span>
             </article>
-            <article class="thinking-card">
-              <span class="thinking-number">06</span>
-              <div class="thinking-icon">✦</div>
-              <b>Ask Epochs</b>
-              <small>Grounded RAG</small>
+            <article class="thinking-card" tabindex="0" aria-label="Step 6: Ask Epochs">
+              <span class="thinking-number">06 / EXPLAIN</span>
+              <div class="thinking-art art-ask" aria-hidden="true"><div class="ask-orb"><span>✦</span></div><div class="ask-wave"><i style="height:4px"></i><i style="height:8px"></i><i style="height:12px"></i><i style="height:6px"></i><i style="height:10px"></i><i style="height:5px"></i><i style="height:11px"></i><i style="height:7px"></i><i style="height:3px"></i><i style="height:9px"></i><i style="height:12px"></i><i style="height:5px"></i><i style="height:8px"></i><i style="height:4px"></i><i style="height:11px"></i><i style="height:6px"></i><i style="height:9px"></i><i style="height:3px"></i><i style="height:12px"></i><i style="height:7px"></i><i style="height:5px"></i><i style="height:10px"></i><i style="height:4px"></i></div><div class="ask-question">Why this genre?</div><div class="ask-answer"><span></span><span></span><span></span></div><div class="ask-source">↳ PROJECT SOURCE</div></div>
+              <div class="thinking-copy"><b>Ask Epochs</b><small>Grounded answers from local RAG</small></div><span class="thinking-tag">RETRIEVE · EXPLAIN</span>
             </article>
           </div>
           <button class="thinking-arrow thinking-arrow-next" type="button" aria-label="Next step">→</button>

@@ -62,6 +62,7 @@ async function askEpochs(question) {
   const answer = document.getElementById("ragAnswer");
   const sources = document.getElementById("ragSources");
   const button = document.getElementById("ragAskButton");
+  const questionChips = document.querySelectorAll("[data-rag-question]");
 
   if (!answer || !sources || !button) return;
 
@@ -69,10 +70,15 @@ async function askEpochs(question) {
   if (!trimmed) return;
 
   button.disabled = true;
-  button.innerHTML = "Thinking…";
-  answer.classList.remove("hidden");
-  sources.classList.add("hidden");
+  button.innerHTML = '<span class="rag-send-label">Thinking</span><span class="rag-send-icon" aria-hidden="true">…</span>';
+  answer.classList.remove("hidden", "is-error", "is-ready");
+  answer.classList.add("is-loading");
+  answer.setAttribute("aria-busy", "true");
   answer.textContent = "Retrieving relevant Epochs knowledge…";
+  sources.classList.add("hidden");
+  questionChips.forEach(chip => {
+    chip.classList.toggle("is-active", chip.dataset.ragQuestion === trimmed);
+  });
 
   try {
     const response = await fetch(`${EPOCHS_RAG_API}/rag/ask`, {
@@ -90,23 +96,29 @@ async function askEpochs(question) {
       throw new Error(data.detail || "RAG request failed.");
     }
 
+    answer.classList.remove("is-loading", "is-error");
+    answer.classList.add("is-ready");
+    answer.setAttribute("aria-busy", "false");
     answer.innerHTML = renderRagMarkdown(
       data.answer || "No answer returned."
     );
 
     if (Array.isArray(data.sources) && data.sources.length) {
       sources.innerHTML =
-        "<strong>Retrieved knowledge:</strong> " +
+        "<strong>RETRIEVED SOURCES</strong>" +
         data.sources.map(source => `<span>${escapeHtml(source)}</span>`).join("");
       sources.classList.remove("hidden");
     }
   } catch (error) {
+    answer.classList.remove("is-loading", "is-ready");
+    answer.classList.add("is-error");
+    answer.setAttribute("aria-busy", "false");
     answer.textContent =
       error.message ||
       "Epochs could not retrieve the requested knowledge.";
   } finally {
     button.disabled = false;
-    button.innerHTML = 'Ask Epochs <span>→</span>';
+    button.innerHTML = '<span class="rag-send-label">Ask Epochs</span><span class="rag-send-icon" aria-hidden="true">↗</span>';
   }
 }
 
@@ -129,7 +141,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (input) {
     input.addEventListener("keydown", event => {
-      if (event.key === "Enter") askEpochs(input.value);
+      if (event.key === "Enter") {
+        event.preventDefault();
+        if (!button?.disabled) askEpochs(input.value);
+      }
     });
   }
 

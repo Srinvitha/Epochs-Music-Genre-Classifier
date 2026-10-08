@@ -16,6 +16,194 @@ let waveformAnimationFrame = null;
 let activeGenreArtworkIndex = 0;
 
 const $ = (id) => document.getElementById(id);
+const EPOCHS_INTRO_AUDIO = "assets/spark-sound.mp3";
+const epochAudio = $("epochAudioPlayer");
+const epochMuteButton = $("epochMuteButton");
+const epochMuteIcon = $("epochMuteIcon");
+const epochMuteLabel = $("epochMuteLabel");
+const epochVolumeSlider = $("epochVolume");
+const epochVolumeValue = $("epochVolumeValue");
+
+let epochAudioMuted = false;
+try {
+  epochAudioMuted = localStorage.getItem("epochsAudioMuted") === "true";
+} catch (error) {
+  console.info("Audio preference storage is unavailable.", error);
+}
+let epochAudioMode = "intro";
+let epochCurrentObjectURL = null;
+let epochAudioNeedsGesture = false;
+let epochAudioVolumeOverride = null;
+let epochSongFadeInterval = null;
+
+function setEpochAudioVolume(volume) {
+  const safeVolume = Math.min(0.5, Math.max(0, volume));
+  if (epochAudio) epochAudio.volume = safeVolume;
+  if (epochVolumeSlider) epochVolumeSlider.value = String(Math.round(safeVolume * 100));
+  if (epochVolumeValue) epochVolumeValue.textContent = `${Math.round(safeVolume * 100)}%`;
+}
+
+function clearEpochSongFade() {
+  if (epochSongFadeInterval === null) return;
+  window.clearInterval(epochSongFadeInterval);
+  epochSongFadeInterval = null;
+}
+
+function startEpochSongFade(targetVolume) {
+  clearEpochSongFade();
+  let currentStep = 0;
+  epochSongFadeInterval = window.setInterval(() => {
+    if (epochAudioMuted || epochAudioMode !== "song" || epochAudio?.paused) {
+      clearEpochSongFade();
+      return;
+    }
+
+    currentStep += 1;
+    if (epochAudio) {
+      epochAudio.volume = Math.min(
+        targetVolume,
+        targetVolume * (currentStep / 24)
+      );
+    }
+
+    if (currentStep >= 24) clearEpochSongFade();
+  }, 50);
+}
+
+function updateEpochAudioButton() {
+  if (!epochMuteButton) return;
+  epochMuteButton.setAttribute("aria-pressed", String(epochAudioMuted));
+  epochMuteButton.setAttribute("aria-label", epochAudioMuted ? "Unmute audio" : "Mute audio");
+  if (epochMuteIcon) {
+    epochMuteIcon.textContent = "♫";
+    epochMuteIcon.style.display = "inline-block";
+    epochMuteIcon.style.transform = epochAudioMuted ? "rotate(180deg)" : "rotate(0deg)";
+    epochMuteIcon.style.transition = "transform 220ms ease";
+  }
+  if (epochMuteLabel) epochMuteLabel.textContent = epochAudioMuted ? "Muted" : "Audio on";
+}
+
+epochVolumeSlider?.addEventListener("input", () => {
+  const percent = Math.min(50, Math.max(0, Number(epochVolumeSlider.value)));
+  epochAudioVolumeOverride = percent / 100;
+  setEpochAudioVolume(epochAudioVolumeOverride);
+  clearEpochSongFade();
+});
+
+function stopEpochAudio() {
+  if (!epochAudio) return;
+  clearEpochSongFade();
+  epochAudio.pause();
+  if (epochAudio.src) epochAudio.currentTime = 0;
+}
+
+function releaseEpochObjectURL() {
+  if (!epochCurrentObjectURL) return;
+  URL.revokeObjectURL(epochCurrentObjectURL);
+  epochCurrentObjectURL = null;
+}
+
+async function playEpochIntro() {
+  if (!epochAudio) return;
+  stopEpochAudio();
+  releaseEpochObjectURL();
+  epochAudioMode = "intro";
+  epochAudio.src = EPOCHS_INTRO_AUDIO;
+  epochAudio.loop = true;
+  setEpochAudioVolume(epochAudioVolumeOverride ?? 0.15);
+  epochAudio.load();
+  if (epochAudioMuted) return;
+
+  try {
+    await epochAudio.play();
+    epochAudioNeedsGesture = false;
+  } catch (error) {
+    if (error.name === "NotAllowedError") epochAudioNeedsGesture = true;
+    else console.info("Could not play the intro audio.", error);
+  }
+}
+
+async function playEpochSong(file) {
+  if (!epochAudio || !file) return;
+  stopEpochAudio();
+  releaseEpochObjectURL();
+  epochAudioMode = "song";
+  epochCurrentObjectURL = URL.createObjectURL(file);
+  epochAudio.src = epochCurrentObjectURL;
+  epochAudio.loop = false;
+  const targetVolume = epochAudioVolumeOverride ?? 0.08;
+  setEpochAudioVolume(targetVolume);
+  epochAudio.volume = 0;
+  epochAudio.load();
+  if (epochAudioMuted) return;
+
+  try {
+    await epochAudio.play();
+    epochAudioNeedsGesture = false;
+    startEpochSongFade(targetVolume);
+  } catch (error) {
+    if (error.name === "NotAllowedError") epochAudioNeedsGesture = true;
+    else console.info("Could not play the selected song.", error);
+  }
+}
+
+function setEpochAudioMuted(muted) {
+  epochAudioMuted = muted;
+  if (muted) clearEpochSongFade();
+  try {
+    localStorage.setItem("epochsAudioMuted", String(muted));
+  } catch (error) {
+    console.info("Could not save the audio preference.", error);
+  }
+
+  if (muted) {
+    if (epochAudioMode === "intro") stopEpochAudio();
+    else epochAudio?.pause();
+  } else if (epochAudioMode === "intro") {
+    void playEpochIntro();
+  } else if (epochAudio?.src) {
+    const targetVolume = epochAudioVolumeOverride ?? 0.08;
+    setEpochAudioVolume(targetVolume);
+    epochAudio.volume = 0;
+    epochAudio.play().then(() => {
+      epochAudioNeedsGesture = false;
+      startEpochSongFade(targetVolume);
+    }).catch((error) => {
+      if (error.name === "NotAllowedError") epochAudioNeedsGesture = true;
+      else console.info("Could not resume audio playback.", error);
+    });
+  }
+  updateEpochAudioButton();
+}
+
+function retryEpochAudio() {
+  if (epochAudioMuted || !epochAudioNeedsGesture || !epochAudio?.paused) return;
+  if (epochAudioMode === "intro") void playEpochIntro();
+  else if (epochAudio.src) {
+    const targetVolume = epochAudioVolumeOverride ?? 0.08;
+    setEpochAudioVolume(targetVolume);
+    epochAudio.volume = 0;
+    epochAudio.play().then(() => {
+      epochAudioNeedsGesture = false;
+      startEpochSongFade(targetVolume);
+    }).catch((error) => {
+      if (error.name === "NotAllowedError") epochAudioNeedsGesture = true;
+      else console.info("Could not resume audio playback.", error);
+    });
+  }
+}
+
+function initEpochAudio() {
+  updateEpochAudioButton();
+  setEpochAudioVolume(epochAudioVolumeOverride ?? 0.15);
+  document.addEventListener("pointerdown", retryEpochAudio);
+  document.addEventListener("keydown", retryEpochAudio);
+  void playEpochIntro();
+}
+
+epochMuteButton?.addEventListener("click", () => {
+  setEpochAudioMuted(!epochAudioMuted);
+});
 
 function initEpochsSplash() {
   const splash = $("epochSplash");
@@ -28,7 +216,10 @@ function initEpochsSplash() {
     window.setTimeout(() => splash.remove(), 950);
   };
 
-  splash.addEventListener("click", finish, { once: true });
+  splash.addEventListener("click", () => {
+    retryEpochAudio();
+    finish();
+  }, { once: true });
   window.setTimeout(finish, 2500);
 }
 
@@ -481,6 +672,7 @@ analyzeButton.addEventListener("click", analyzeSong);
 
 async function analyzeSong() {
   if (!selectedFile) return;
+  void playEpochSong(selectedFile);
 
   analyzerCard.classList.add("hidden");
   loading.classList.remove("hidden");
@@ -672,6 +864,10 @@ function drawWaveform(values) {
 
 
 newAnalysisButton.addEventListener("click", () => {
+  stopEpochAudio();
+  releaseEpochObjectURL();
+  epochAudioMode = "intro";
+  if (!epochAudioMuted) void playEpochIntro();
   clearSelected();
   loading.classList.add("hidden");
   results.classList.add("hidden");
@@ -948,3 +1144,8 @@ document.addEventListener("keydown", (event) => {
   update();
   restart();
 })();
+
+document.addEventListener("DOMContentLoaded", () => {
+  initEpochsSplash();
+  initEpochAudio();
+});
