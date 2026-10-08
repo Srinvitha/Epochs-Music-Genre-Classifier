@@ -41,6 +41,7 @@ const results = $("results");
 const analyzerCard = $("analyzerCard");
 const newAnalysisButton = $("newAnalysisButton");
 const toast = $("toast");
+const navAnalyze = $("navAnalyze");
 
 let selectedFile = null;
 let recordedBlob = null;
@@ -454,6 +455,14 @@ recordButton.addEventListener("click", () => {
   }
 });
 
+if (navAnalyze) {
+  navAnalyze.addEventListener("click", (event) => {
+    event.preventDefault();
+    const target = !results.classList.contains("hidden") ? results : analyzerCard;
+    target.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+}
+
 analyzeButton.addEventListener("click", analyzeSong);
 
 async function analyzeSong() {
@@ -462,7 +471,12 @@ async function analyzeSong() {
   analyzerCard.classList.add("hidden");
   loading.classList.remove("hidden");
   results.classList.add("hidden");
-  window.scrollTo({ top: 0, behavior: "smooth" });
+
+  // Move the user into the analysis experience immediately. Do not make
+  // them manually scroll after pressing Analyze Song.
+  requestAnimationFrame(() => {
+    loading.scrollIntoView({ behavior: "smooth", block: "center" });
+  });
 
   const formData = new FormData();
   const isRecording = selectedFile.name.startsWith("epoch-recording");
