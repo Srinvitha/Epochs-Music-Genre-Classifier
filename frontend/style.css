@@ -27,7 +27,10 @@ button:focus-visible{outline:2px solid var(--violet);outline-offset:3px}
 }
 .results::after{content:"";position:absolute;z-index:-1;left:50%;top:0;width:100vw;height:100%;transform:translateX(-50%);pointer-events:none;background:radial-gradient(circle at 75% 18%,rgba(184,138,255,.15),transparent 28%),linear-gradient(90deg,rgba(5,4,11,.35),transparent 45%,rgba(5,4,11,.25));}
 .results-head{display:flex;justify-content:space-between;align-items:end;margin-bottom:25px}.results-head h2{font-size:34px;letter-spacing:-.04em;max-width:700px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.ghost-btn{border:1px solid var(--line);background:#ffffff04;color:#bbb8c6;border-radius:10px;padding:10px 14px;cursor:pointer;font-size:11px}.ghost-btn:hover{border-color:#a78bfa55;color:#ddd4ff}
-.dna-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:12px}.dna-card{min-height:148px;background:linear-gradient(145deg,#12121a,#0d0d13);border:1px solid var(--line);border-radius:18px;padding:22px}.dna-main{background:radial-gradient(circle at 90% 10%,#a78bfa16,transparent 48%),#111019}.card-kicker{color:#777482;font-size:9px;letter-spacing:.15em;font-weight:850}.genre-line{display:flex;align-items:baseline;gap:10px;margin-top:19px}.genre-line h3{font-size:30px;letter-spacing:-.045em}.confidence{color:var(--violet);font-size:12px;font-weight:750}.confidence-label{color:#666470;font-size:9px;margin-top:2px}.genre-track{height:4px;background:#25232e;border-radius:10px;margin-top:17px;overflow:hidden}.genre-track div{height:100%;background:linear-gradient(90deg,#7c3aed,#d8b4fe);border-radius:inherit}.metric-card .big-number{display:inline-block;margin-top:28px;font-size:34px;font-weight:800;letter-spacing:-.04em}.unit{font-size:10px;color:#777482;margin-left:5px}.metric-caption{font-size:9px;color:#5f5d69;margin-top:3px}
+.dna-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:12px}.dna-card{min-height:148px;background:linear-gradient(145deg,#12121a,#0d0d13);border:1px solid var(--line);border-radius:18px;padding:22px}.dna-main{background:radial-gradient(circle at 90% 10%,#a78bfa16,transparent 48%),#111019}
+.dna-main{position:relative;overflow:hidden}
+.dna-main::after{content:"";position:absolute;z-index:0;right:-7%;top:-28%;width:64%;height:165%;background:linear-gradient(90deg,rgba(8,7,13,.98) 0%,rgba(8,7,13,.42) 42%,rgba(8,7,13,.08) 100%),url("assets/cosmic-horizon.png") center/cover no-repeat;opacity:.28;filter:saturate(1.12);pointer-events:none;mix-blend-mode:screen}
+.dna-art-wrap,.dna-main-copy{position:relative;z-index:2}.card-kicker{color:#777482;font-size:9px;letter-spacing:.15em;font-weight:850}.genre-line{display:flex;align-items:baseline;gap:10px;margin-top:19px}.genre-line h3{font-size:30px;letter-spacing:-.045em}.confidence{color:var(--violet);font-size:12px;font-weight:750}.confidence-label{color:#666470;font-size:9px;margin-top:2px}.genre-track{height:4px;background:#25232e;border-radius:10px;margin-top:17px;overflow:hidden}.genre-track div{height:100%;background:linear-gradient(90deg,#7c3aed,#d8b4fe);border-radius:inherit}.metric-card .big-number{display:inline-block;margin-top:28px;font-size:34px;font-weight:800;letter-spacing:-.04em}.unit{font-size:10px;color:#777482;margin-left:5px}.metric-caption{font-size:9px;color:#5f5d69;margin-top:3px}
 .analysis-grid{display:grid;grid-template-columns:.85fr 1.15fr;gap:12px;margin-top:12px}.panel{background:#101017;border:1px solid var(--line);border-radius:18px;padding:23px}.panel-head{display:flex;justify-content:space-between;align-items:start;margin-bottom:22px}.panel-head h3{font-size:19px;letter-spacing:-.025em;margin-top:4px}.model-chip,.panel-tag{font-size:8px;color:#777482;border:1px solid var(--line);border-radius:100px;padding:5px 8px;letter-spacing:.1em}.probability-row{margin-bottom:14px}.probability-head{display:flex;justify-content:space-between;font-size:11px;margin-bottom:6px}.probability-head span:last-child{color:#777482}.progress{height:5px;background:#24232d;border-radius:8px;overflow:hidden}.progress-fill{height:100%;border-radius:inherit;background:linear-gradient(90deg,#7c3aed,#a78bfa);transform-origin:left;animation:grow .7s ease both}
 .analysis-meta{margin-top:8px;color:#85828f;font-size:9px;line-height:1.4}
 .waveform-panel{min-height:290px}.waveform-panel canvas{width:100%;height:205px;display:block}
@@ -716,8 +719,9 @@ html{scroll-padding-top:88px}
   content:"";position:absolute;z-index:-2;pointer-events:none;
   left:50%;top:0;transform:translateX(-50%);
   width:100vw;height:820px;
-  background:linear-gradient(180deg,rgba(5,4,11,.35),rgba(5,4,11,.93) 78%),url("assets/cosmic-horizon.png") center 18%/cover no-repeat;
-  opacity:.18;
+  background:linear-gradient(180deg,rgba(5,4,11,.12),rgba(5,4,11,.72) 78%),url("assets/cosmic-horizon.png") center 18%/cover no-repeat;
+  opacity:.36;
+  filter:saturate(1.08) contrast(1.04);
   mask-image:linear-gradient(180deg,black,transparent 82%);
 }
 .results::after{content:"";position:absolute;z-index:-1;left:50%;top:0;transform:translateX(-50%);width:100vw;height:100%;background:radial-gradient(circle at 75% 5%,rgba(167,139,250,.08),transparent 22%);pointer-events:none}
@@ -729,61 +733,26 @@ html{scroll-padding-top:88px}
 .results-live .analysis-grid{animation:sectionReveal .9s .42s var(--ease-out) both}
 .results-live .spectro-panel{animation:sectionReveal .9s .55s var(--ease-out) both}
 .results-live .rag-panel{animation:sectionReveal .9s .68s var(--ease-out) both}
-.results-live .thinking-section{animation:sectionReveal .9s .82s var(--ease-out) both}
-
-.dna-main{position:relative;display:grid;grid-template-columns:minmax(190px,.72fr) minmax(0,1.28fr);gap:22px;overflow:hidden;padding:14px}
-.dna-main::before{content:"";position:absolute;inset:0;background:linear-gradient(120deg,rgba(124,58,237,.05),transparent 48%,rgba(232,121,249,.04));pointer-events:none}
-.dna-art-wrap{position:relative;min-height:180px;overflow:hidden;border-radius:14px;border:1px solid rgba(255,255,255,.1);background:#08070d}
-.dna-art-wrap img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scale(1.05);transition:opacity .55s ease,transform 7s ease;animation:artDrift 8s ease-in-out infinite alternate}
-.dna-art-wrap::before{content:"";position:absolute;z-index:2;inset:0;background:linear-gradient(180deg,rgba(7,5,13,.05),rgba(7,5,13,.62));pointer-events:none}
-.dna-art-vignette{position:absolute;z-index:3;inset:0;background:radial-gradient(circle at 50% 45%,transparent 20%,rgba(5,4,11,.38) 100%);pointer-events:none}
-.dna-art-scan{position:absolute;z-index:4;left:0;right:0;top:-20%;height:2px;background:linear-gradient(90deg,transparent,#e3d5ff,transparent);box-shadow:0 0 18px #b99aff88;animation:artScan 4.5s linear infinite}
-.dna-art-meta{position:absolute;z-index:5;left:12px;right:12px;bottom:10px;display:flex;justify-content:space-between;color:#ddd5eb;font-size:7px;letter-spacing:.14em;font-weight:800}
-.dna-main-copy{position:relative;z-index:2;padding:8px 12px 8px 0;align-self:center}
-.dna-status{display:flex;align-items:center;gap:7px;margin-top:19px;color:#777184;font-size:8px;letter-spacing:.14em;font-weight:800}
-.dna-status span{width:6px;height:6px;border-radius:50%;background:#9df2c5;box-shadow:0 0 12px #8ef0bf88;animation:statusPulse 2s infinite}
-.art-enter{animation:artEnter .8s var(--ease-out) both!important}
-.art-crossfade{opacity:.05!important;transform:scale(1.12)!important}
-
-.metric-card{overflow:hidden}
-.metric-card::after{content:"";position:absolute;left:-30%;right:-30%;bottom:-70px;height:100px;background:radial-gradient(ellipse,rgba(167,139,250,.13),transparent 70%);opacity:0;transition:opacity .3s ease}
-.metric-card:hover::after{opacity:1}
-
-.probabilities-panel{position:relative;overflow:hidden}
-.probabilities-panel::after{content:"";position:absolute;inset:auto -20% -80px;height:170px;background:radial-gradient(ellipse,rgba(124,58,237,.13),transparent 65%);pointer-events:none}
-.probability-row{position:relative;padding:7px 8px;margin-bottom:7px;border-radius:9px;transition:transform .25s ease,background .25s ease}
-.probability-row:hover{transform:translateX(4px);background:rgba(167,139,250,.055)}
-.probability-row .progress-fill{animation:probabilityGrow .9s var(--delay) var(--ease-out) both}
-
-.waveform-panel canvas{filter:drop-shadow(0 0 10px rgba(167,139,250,.12))}
-.spectro-wrap{position:relative}
-.spectro-wrap::after{content:"";position:absolute;left:0;right:0;top:0;height:2px;background:linear-gradient(90deg,transparent,#d8c5ff,#e879f9,transparent);box-shadow:0 0 18px #c4b5fd88;animation:spectroScan 5s linear infinite;pointer-events:none}
-.spectro-wrap img{transition:filter .35s ease,transform 8s ease;transform:scale(1.002)}
-.spectro-wrap:hover img{filter:saturate(1.15) contrast(1.05);transform:scale(1.018)}
-
-.rag-panel{position:relative;overflow:hidden}
-.rag-panel::before{content:"";position:absolute;left:-20%;top:-50%;width:60%;height:200%;background:linear-gradient(90deg,transparent,rgba(196,181,253,.06),transparent);transform:rotate(16deg);animation:ragSweep 7s ease-in-out infinite}
-.rag-badge{animation:ragBadge 3s ease-in-out infinite}
-.rag-questions button{transition:transform .22s var(--ease-out),border-color .22s ease,background .22s ease}
-.rag-questions button:hover{transform:translateY(-2px)}
-
-.thinking-section{margin-top:18px;padding:46px 38px 42px;border:1px solid rgba(167,139,250,.15);border-radius:24px;background:radial-gradient(circle at 82% 45%,rgba(124,58,237,.12),transparent 30%),linear-gradient(120deg,rgba(15,11,24,.94),rgba(7,6,12,.94));position:relative;overflow:hidden}
+.results-live  .thinking-section{margin-top:18px;padding:46px 38px 42px;border:1px solid rgba(167,139,250,.15);border-radius:24px;background:radial-gradient(circle at 82% 45%,rgba(124,58,237,.12),transparent 30%),linear-gradient(120deg,rgba(15,11,24,.94),rgba(7,6,12,.94));position:relative;overflow:hidden}
 .thinking-section::before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent 49.9%,rgba(196,181,253,.045) 50%,transparent 50.1%),linear-gradient(rgba(196,181,253,.025) 1px,transparent 1px);background-size:100% 100%,100% 54px;mask-image:linear-gradient(to bottom,transparent,black 15%,black 85%,transparent);animation:gridFloat 11s linear infinite}
-.thinking-heading{position:relative;z-index:2;max-width:650px}
+.thinking-heading{position:relative;z-index:2;max-width:760px}
 .thinking-heading h2{font-size:clamp(32px,4.3vw,54px);line-height:1;letter-spacing:-.055em}
 .thinking-heading h2 em{font-style:normal;color:#c5a8ff}
-.thinking-heading p{max-width:650px;margin-top:15px;color:#8c8498;line-height:1.65;font-size:12px}
-.pipeline{position:relative;z-index:2;display:grid;grid-template-columns:1fr auto 1fr auto 1fr auto 1fr auto 1fr auto 1fr;align-items:center;gap:8px;margin-top:42px}
-.pipeline-node{min-height:112px;padding:14px;border:1px solid rgba(255,255,255,.09);border-radius:15px;background:rgba(255,255,255,.025);display:flex;flex-direction:column;justify-content:space-between;transition:transform .3s var(--ease-out),border-color .3s ease,background .3s ease;position:relative;overflow:hidden}
-.pipeline-node::after{content:"";position:absolute;left:-100%;top:0;width:55%;height:100%;background:linear-gradient(90deg,transparent,rgba(196,181,253,.12),transparent);transform:skewX(-18deg);transition:left .7s ease}
-.pipeline-node:hover{transform:translateY(-7px);border-color:rgba(196,181,253,.32);background:rgba(167,139,250,.055)}
-.pipeline-node:hover::after{left:140%}
-.pipeline-node span{color:#a98df5;font-size:8px;letter-spacing:.14em}
-.pipeline-node b{font-size:12px;line-height:1.15}
-.pipeline-node small{color:#777184;font-size:8px;line-height:1.4}
-.pipeline-link{color:#765ca8;font-style:normal;font-size:17px;animation:linkPulse 2s ease-in-out infinite}
-.pipeline-link:nth-of-type(2){animation-delay:.2s}.pipeline-link:nth-of-type(3){animation-delay:.4s}.pipeline-link:nth-of-type(4){animation-delay:.6s}.pipeline-link:nth-of-type(5){animation-delay:.8s}
-
+.thinking-heading p{max-width:720px;margin-top:15px;color:#8c8498;line-height:1.65;font-size:12px}
+.thinking-conveyor{position:relative;z-index:2;margin-top:36px;overflow:hidden;padding:4px 0 14px}
+.thinking-track{display:flex;gap:14px;width:max-content;transform:translateX(0);transition:transform .9s cubic-bezier(.22,1,.36,1)}
+.thinking-card{width:184px;min-height:150px;flex:0 0 184px;padding:15px;border:1px solid rgba(255,255,255,.09);border-radius:17px;background:linear-gradient(145deg,rgba(255,255,255,.035),rgba(255,255,255,.012));display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden;opacity:.48;transform:scale(.94);transition:opacity .55s ease,transform .55s cubic-bezier(.22,1,.36,1),border-color .55s ease,background .55s ease,box-shadow .55s ease}
+.thinking-card::before{content:"";position:absolute;inset:-50% auto auto -20%;width:70%;height:140%;background:linear-gradient(90deg,transparent,rgba(196,181,253,.1),transparent);transform:rotate(18deg) translateX(-150%);transition:transform .9s ease}
+.thinking-card.is-active{opacity:1;transform:scale(1);border-color:rgba(196,181,253,.38);background:linear-gradient(145deg,rgba(124,58,237,.15),rgba(255,255,255,.035));box-shadow:0 18px 55px rgba(72,39,130,.18),inset 0 1px rgba(255,255,255,.08)}
+.thinking-card.is-active::before{transform:rotate(18deg) translateX(240%)}
+.thinking-number{color:#a98df5;font-size:8px;letter-spacing:.14em;font-weight:800}
+.thinking-icon{display:grid;place-items:center;width:42px;height:42px;border-radius:12px;border:1px solid rgba(196,181,253,.16);background:rgba(124,58,237,.08);color:#d8c7ff;font-size:18px;font-weight:800;letter-spacing:-.05em;box-shadow:inset 0 0 24px rgba(124,58,237,.08)}
+.thinking-card b{font-size:13px;line-height:1.15}
+.thinking-card small{color:#777184;font-size:8px;line-height:1.4}
+.thinking-progress{height:1px;margin:13px 2px 0;background:rgba(196,181,253,.1);overflow:hidden}
+.thinking-progress span{display:block;height:100%;width:16.666%;background:linear-gradient(90deg,#9f7aea,#e879f9);box-shadow:0 0 12px rgba(167,139,250,.65);transition:transform 2.7s linear}
+.thinking-conveyor:hover .thinking-track{cursor:grab}
+.thinking-conveyor:hover .thinking-progress span{animation-play-state:paused}
 .reveal-on-scroll{opacity:0;transform:translateY(22px);transition:opacity .8s var(--ease-out),transform .8s var(--ease-out)}
 .reveal-on-scroll.in-view{opacity:1;transform:none}
 
@@ -840,7 +809,6 @@ html{scroll-padding-top:88px}
   .dna-art-wrap{min-height:220px}
   .dna-main-copy{padding:2px 8px 10px}
   .thinking-section{padding:28px 20px}
-  .pipeline{grid-template-columns:1fr}
 }
 @media(prefers-reduced-motion:reduce){
   .noise-layer,.particle-field,.cursor-glow{display:none}
@@ -873,3 +841,362 @@ html{scroll-padding-top:88px}
 @media(max-width:900px){.future-banner{padding:28px;min-height:0}.dna-orbit{width:160px}.future-copy p{max-width:520px}}
 @media(max-width:700px){.future-banner{align-items:flex-start}.dna-orbit{display:none}}
 @media(prefers-reduced-motion:reduce){.future-banner::before,.dna-orbit .r1,.dna-orbit .r2,.orbit-core{animation:none}}
+
+
+@media (max-width:760px){
+  .thinking-section{padding:34px 20px 30px}
+  .thinking-conveyor{margin-left:-4px;margin-right:-4px}
+  .thinking-card{width:168px;flex-basis:168px;min-height:140px}
+}
+
+/* V6 — immersive analysis / result world */
+.loading{
+  min-height:760px;
+  margin-left:calc(50% - 50vw);
+  margin-right:calc(50% - 50vw);
+  padding:70px 6vw;
+  position:relative;
+  isolation:isolate;
+  background:
+    linear-gradient(90deg,rgba(5,4,11,.28),rgba(5,4,11,.06) 48%,rgba(5,4,11,.34)),
+    url("assets/cosmic-horizon.png") center 46%/cover no-repeat;
+}
+.loading::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:-2;
+  background:
+    linear-gradient(180deg,rgba(5,4,11,.18),rgba(5,4,11,.02) 38%,rgba(5,4,11,.58)),
+    radial-gradient(circle at 50% 44%,rgba(182,133,255,.13),transparent 34%);
+  animation:loadingSceneBreath 7s ease-in-out infinite alternate;
+}
+.loading::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:-1;
+  pointer-events:none;
+  background:
+    repeating-linear-gradient(0deg,transparent 0 3px,rgba(255,255,255,.018) 4px),
+    radial-gradient(circle at 50% 45%,transparent 0 35%,rgba(5,4,11,.34) 78%);
+  mix-blend-mode:screen;
+  opacity:.55;
+}
+.loading-core{margin-bottom:18px}
+.loading-copy{max-width:680px;text-shadow:0 5px 30px rgba(0,0,0,.55)}
+.loading-copy h2{font-size:clamp(38px,5.8vw,70px)}
+.loading-copy p{font-size:13px;color:#c2bacd}
+
+.results{
+  min-height:100vh;
+  padding-top:58px;
+  padding-bottom:100px;
+  isolation:isolate;
+}
+.results::before{
+  width:100vw;
+  height:100%;
+  background:
+    linear-gradient(180deg,rgba(5,4,11,.10) 0%,rgba(5,4,11,.18) 24%,rgba(5,4,11,.70) 72%,rgba(5,4,11,.94) 100%),
+    url("assets/cosmic-horizon.png") center top/cover no-repeat;
+  opacity:.82;
+  filter:saturate(1.12) contrast(1.04);
+  mask-image:none;
+}
+.results::after{
+  width:100vw;
+  height:100%;
+  background:
+    radial-gradient(circle at 72% 16%,rgba(218,168,255,.22),transparent 24%),
+    radial-gradient(circle at 23% 35%,rgba(80,103,255,.10),transparent 24%),
+    linear-gradient(90deg,rgba(5,4,11,.38),transparent 28%,transparent 74%,rgba(5,4,11,.3));
+  z-index:-1;
+}
+.results-head h2{font-size:clamp(30px,4vw,52px);text-shadow:0 8px 35px #0009}
+.results-head .eyebrow{color:#d3baff}
+
+.dna-grid{
+  grid-template-columns:minmax(300px,1.45fr) repeat(3,minmax(150px,.72fr));
+  gap:10px;
+  align-items:stretch;
+}
+.dna-card{
+  background:rgba(10,9,17,.55);
+  border-color:rgba(255,255,255,.14);
+  backdrop-filter:blur(14px) saturate(1.1);
+  -webkit-backdrop-filter:blur(14px) saturate(1.1);
+  box-shadow:0 24px 80px rgba(0,0,0,.28),inset 0 1px rgba(255,255,255,.06);
+}
+.dna-main{
+  min-height:310px;
+  overflow:hidden;
+}
+.dna-main::after{
+  opacity:.52;
+  right:-4%;
+  width:72%;
+  background:linear-gradient(90deg,rgba(7,6,12,.97),rgba(7,6,12,.48) 42%,rgba(7,6,12,.08)),url("assets/cosmic-horizon.png") center/cover no-repeat;
+  mix-blend-mode:screen;
+}
+.dna-art-wrap{
+  width:54%;
+  min-height:100%;
+  position:absolute;
+  right:0;
+  top:0;
+  overflow:hidden;
+  border-left:1px solid rgba(255,255,255,.08);
+  background:#0b0912;
+}
+.dna-art-wrap::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(90deg,rgba(7,6,12,.82),transparent 34%,rgba(7,6,12,.08)),linear-gradient(180deg,transparent 50%,rgba(7,6,12,.7));
+  pointer-events:none;
+}
+.dna-art-wrap img{width:100%;height:100%;object-fit:cover;display:block;animation:artDrift 9s ease-in-out alternate infinite}
+.dna-main-copy{position:relative;z-index:3;width:55%;padding:27px 24px 24px}
+.dna-main-copy .genre-line{align-items:flex-end}
+.genre-line h3{font-size:clamp(34px,4vw,50px);text-shadow:0 8px 28px #0009}
+.confidence{color:#d4baff;font-weight:800}
+.dna-card.metric-card{min-height:310px;display:flex;flex-direction:column;justify-content:center;padding:25px 20px;background:linear-gradient(150deg,rgba(20,17,29,.58),rgba(8,8,13,.48));}
+.metric-card .big-number{font-size:clamp(32px,4vw,48px);text-shadow:0 7px 25px #0008}
+.metric-card .metric-caption{color:#aaa2b2}
+
+.analysis-grid{gap:10px;margin-top:10px}
+.panel{
+  background:rgba(9,9,15,.67);
+  border-color:rgba(255,255,255,.12);
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+  box-shadow:0 24px 70px rgba(0,0,0,.2),inset 0 1px rgba(255,255,255,.045);
+}
+.spectro-panel{background:rgba(9,8,14,.66)}
+.spectro-wrap{background:rgba(4,4,8,.56)}
+
+/* remove the old dashboard-like lock/status treatment completely */
+.dna-status{display:none!important}
+
+@keyframes loadingSceneBreath{from{transform:scale(1);opacity:.8}to{transform:scale(1.045);opacity:1}}
+
+@media(max-width:900px){
+  .dna-grid{grid-template-columns:1fr 1fr}
+  .dna-main{grid-column:span 2}
+  .dna-main-copy{width:58%}
+  .dna-art-wrap{width:60%}
+}
+@media(max-width:560px){
+  .loading{min-height:680px;padding:55px 5vw}
+  .dna-grid{grid-template-columns:1fr}
+  .dna-main{grid-column:auto;min-height:410px}
+  .dna-art-wrap{width:100%;height:100%;opacity:.46;border-left:0}
+  .dna-main-copy{width:100%;position:relative}
+  .dna-card.metric-card{min-height:180px}
+}
+
+/* V7 — cinematic thinking carousel: centered active card + clipped neighbors */
+.thinking-conveyor{
+  position:relative;
+  height:250px;
+  margin-top:38px;
+  overflow:hidden;
+  padding:0 54px 18px;
+  isolation:isolate;
+}
+.thinking-track{
+  position:absolute;
+  inset:0 54px 22px;
+  width:auto;
+  height:210px;
+  display:block;
+  overflow:visible;
+  transform:none!important;
+  transition:none;
+}
+.thinking-card{
+  position:absolute;
+  top:10px;
+  left:0;
+  width:clamp(270px,30vw,390px);
+  height:190px;
+  min-height:0;
+  padding:20px 21px;
+  opacity:0;
+  pointer-events:none;
+  transform-origin:center center;
+  transition:transform .82s cubic-bezier(.22,1,.36,1),opacity .65s ease,filter .65s ease,border-color .65s ease,box-shadow .65s ease,background .65s ease;
+  will-change:transform,opacity;
+}
+.thinking-card.is-prev,
+.thinking-card.is-next{
+  opacity:.58;
+  filter:saturate(.72) brightness(.72);
+  pointer-events:auto;
+}
+.thinking-card.is-active{
+  opacity:1;
+  filter:none;
+  z-index:5;
+  box-shadow:0 24px 80px rgba(71,40,130,.25),inset 0 1px rgba(255,255,255,.1);
+}
+.thinking-card.is-prev,
+.thinking-card.is-next{z-index:3}
+.thinking-card.is-prev:hover,
+.thinking-card.is-next:hover{opacity:.82;filter:none;cursor:pointer}
+.thinking-card.is-active .thinking-icon{box-shadow:0 0 35px rgba(167,139,250,.18),inset 0 0 24px rgba(124,58,237,.14)}
+.thinking-arrow{
+  position:absolute;
+  z-index:10;
+  top:88px;
+  width:34px;
+  height:34px;
+  border:1px solid rgba(196,181,253,.18);
+  border-radius:50%;
+  background:rgba(9,7,17,.72);
+  backdrop-filter:blur(10px);
+  color:#cbb9ff;
+  font-size:14px;
+  display:grid;
+  place-items:center;
+  transition:transform .25s ease,border-color .25s ease,background .25s ease,box-shadow .25s ease;
+}
+.thinking-arrow:hover{transform:scale(1.08);border-color:rgba(196,181,253,.45);background:rgba(124,58,237,.16);box-shadow:0 0 24px rgba(124,58,237,.18);cursor:pointer}
+.thinking-arrow-prev{left:8px}
+.thinking-arrow-next{right:8px}
+.thinking-progress{
+  position:absolute;
+  left:54px;
+  right:54px;
+  bottom:3px;
+  height:2px;
+  margin:0;
+  background:rgba(196,181,253,.09);
+}
+.thinking-progress span{width:16.666%!important;transform-origin:left center;transition:transform .75s cubic-bezier(.22,1,.36,1)}
+
+@media (max-width:900px){
+  .thinking-conveyor{height:238px;padding-left:42px;padding-right:42px}
+  .thinking-track{inset:0 42px 22px}
+  .thinking-card{width:min(66vw,330px);height:182px}
+  .thinking-arrow-prev{left:4px}.thinking-arrow-next{right:4px}
+  .thinking-progress{left:42px;right:42px}
+}
+@media (max-width:600px){
+  .thinking-conveyor{height:220px;padding:0 34px 18px}
+  .thinking-track{inset:0 34px 22px}
+  .thinking-card{width:78vw;height:170px;padding:17px}
+  .thinking-arrow{top:79px;width:30px;height:30px}
+  .thinking-progress{left:34px;right:34px}
+}
+
+/* V8 — opening Epochs splash + clean Song DNA composition */
+.epoch-splash{
+  position:fixed;
+  inset:0;
+  z-index:9999;
+  display:grid;
+  place-items:center;
+  overflow:hidden;
+  background:#020207;
+  opacity:1;
+  visibility:visible;
+  transition:opacity .9s cubic-bezier(.22,1,.36,1),visibility .9s ease;
+  cursor:pointer;
+}
+.epoch-splash-art{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  object-position:center;
+  transform:scale(1.015);
+  filter:saturate(1.03) contrast(1.03);
+  animation:splashBreath 3.1s ease-out both;
+}
+.epoch-splash-vignette{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:radial-gradient(circle at 50% 48%,transparent 0 42%,rgba(0,0,0,.18) 72%,rgba(0,0,0,.56) 100%);
+}
+.epoch-splash-progress{
+  position:absolute;
+  left:50%;
+  bottom:34px;
+  width:min(180px,24vw);
+  height:1px;
+  transform:translateX(-50%);
+  background:rgba(255,255,255,.12);
+  overflow:hidden;
+  opacity:.65;
+}
+.epoch-splash-progress span{
+  display:block;
+  width:100%;
+  height:100%;
+  transform-origin:left;
+  transform:scaleX(0);
+  background:linear-gradient(90deg,#9b72ff,#f3d9ff,#ff5c8a);
+  animation:splashProgress 2.5s cubic-bezier(.22,1,.36,1) forwards;
+}
+.epoch-splash.splash-done{opacity:0;visibility:hidden;pointer-events:none}
+body:not(.epoch-home-ready){overflow:hidden}
+@keyframes splashBreath{from{transform:scale(1.015);opacity:.96}to{transform:scale(1.055);opacity:1}}
+@keyframes splashProgress{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+
+/* The Song DNA card is intentionally a simple visual split: artwork | result. */
+.dna-main{
+  display:grid;
+  grid-template-columns:minmax(0,1.02fr) minmax(230px,.98fr);
+  min-height:310px;
+  padding:0;
+  background:rgba(10,9,17,.48);
+}
+.dna-main::after{display:none}
+.dna-art-wrap{
+  position:relative;
+  inset:auto;
+  width:auto;
+  min-height:310px;
+  height:100%;
+  overflow:hidden;
+  border:0;
+  border-right:1px solid rgba(255,255,255,.10);
+  background:#090811;
+}
+.dna-art-wrap::after{
+  background:linear-gradient(180deg,rgba(5,4,10,.02),rgba(5,4,10,.15) 65%,rgba(5,4,10,.52));
+}
+.dna-art-wrap img{height:100%;width:100%;object-fit:cover}
+.dna-main-copy{
+  width:auto;
+  min-width:0;
+  padding:34px 28px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:flex-start;
+  position:relative;
+  z-index:3;
+}
+.dna-main-copy .card-kicker{margin-bottom:18px}
+.genre-line{display:block;margin-top:0}
+.genre-line h3{font-size:clamp(38px,4.6vw,62px);line-height:.94;max-width:100%;word-break:normal}
+.confidence{display:block;margin-top:18px;font-size:15px}
+.confidence-label{margin-top:5px}
+.genre-track{width:100%;max-width:250px;margin-top:20px}
+
+@media(max-width:900px){
+  .dna-main{grid-template-columns:1fr 1fr}
+  .dna-art-wrap{min-height:300px}
+}
+@media(max-width:560px){
+  .dna-main{grid-template-columns:1fr;min-height:0}
+  .dna-art-wrap{min-height:250px;height:250px;border-right:0;border-bottom:1px solid rgba(255,255,255,.10)}
+  .dna-main-copy{padding:25px 22px 28px}
+}
+@media(prefers-reduced-motion:reduce){
+  .epoch-splash-art,.epoch-splash-progress span{animation:none}
+  .epoch-splash-progress span{transform:scaleX(1)}
+}

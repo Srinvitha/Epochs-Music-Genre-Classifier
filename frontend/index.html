@@ -8,6 +8,11 @@
   <link rel="stylesheet" href="rag/rag.css">
 </head>
 <body>
+  <div class="epoch-splash" id="epochSplash" aria-label="Epochs intro" role="presentation">
+    <img src="assets/epochs-splash.png" alt="Epochs" class="epoch-splash-art">
+    <div class="epoch-splash-vignette"></div>
+    <div class="epoch-splash-progress"><span></span></div>
+  </div>
   <div class="noise-layer" aria-hidden="true"></div>
   <div class="cursor-glow" aria-hidden="true"></div>
   <div class="particle-field" id="particleField" aria-hidden="true"></div>
@@ -139,7 +144,6 @@
             <img id="genreArtwork" alt="Genre artwork" loading="eager">
             <div class="dna-art-vignette"></div>
             <div class="dna-art-scan"></div>
-            <div class="dna-art-meta"><span id="genreArtLabel">SONG DNA</span><span>01 / 03</span></div>
           </div>
           <div class="dna-main-copy">
             <div class="card-kicker">PRIMARY GENRE</div>
@@ -149,7 +153,6 @@
             </div>
             <div class="confidence-label">model confidence</div>
             <div class="genre-track"><div id="confidenceBar"></div></div>
-            <div class="dna-status"><span></span> SONG DNA LOCKED</div>
           </div>
         </article>
 
@@ -245,20 +248,51 @@
         <div class="thinking-heading">
           <div class="eyebrow"><span></span> HOW EPOCHS THINKS</div>
           <h2>From raw audio<br><em>to meaningful insight.</em></h2>
-          <p>The interface is animated, but the path underneath is real: audio is processed into 61 handcrafted features, passed through the trained RBF-SVM, assembled into Song DNA, then made explainable through local RAG.</p>
+          <p>Watch raw audio become a measurable, explainable fingerprint — from signal processing and 61 handcrafted features to RBF-SVM classification, Song DNA and grounded RAG.</p>
         </div>
-        <div class="pipeline" aria-label="Epochs analysis pipeline">
-          <article class="pipeline-node"><span>01</span><b>Audio input</b><small>Upload or record</small></article>
-          <i class="pipeline-link">→</i>
-          <article class="pipeline-node"><span>02</span><b>Signal processing</b><small>Clean & analyze</small></article>
-          <i class="pipeline-link">→</i>
-          <article class="pipeline-node"><span>03</span><b>61 features</b><small>MFCC · Chroma · Tempo</small></article>
-          <i class="pipeline-link">→</i>
-          <article class="pipeline-node"><span>04</span><b>RBF-SVM</b><small>Genre probabilities</small></article>
-          <i class="pipeline-link">→</i>
-          <article class="pipeline-node"><span>05</span><b>Song DNA</b><small>Genre · BPM · Energy</small></article>
-          <i class="pipeline-link">→</i>
-          <article class="pipeline-node"><span>06</span><b>Ask Epochs</b><small>Grounded RAG</small></article>
+
+        <div class="thinking-conveyor" aria-label="Epochs analysis pipeline" tabindex="0">
+          <button class="thinking-arrow thinking-arrow-prev" type="button" aria-label="Previous step">←</button>
+          <div class="thinking-track">
+            <article class="thinking-card is-active">
+              <span class="thinking-number">01</span>
+              <div class="thinking-icon">♫</div>
+              <b>Audio input</b>
+              <small>Upload or record</small>
+            </article>
+            <article class="thinking-card">
+              <span class="thinking-number">02</span>
+              <div class="thinking-icon">∿</div>
+              <b>Signal processing</b>
+              <small>Clean & analyze</small>
+            </article>
+            <article class="thinking-card">
+              <span class="thinking-number">03</span>
+              <div class="thinking-icon">61</div>
+              <b>Audio features</b>
+              <small>MFCC · Chroma · Tempo</small>
+            </article>
+            <article class="thinking-card">
+              <span class="thinking-number">04</span>
+              <div class="thinking-icon">S</div>
+              <b>RBF-SVM</b>
+              <small>Genre probabilities</small>
+            </article>
+            <article class="thinking-card">
+              <span class="thinking-number">05</span>
+              <div class="thinking-icon">DNA</div>
+              <b>Song DNA</b>
+              <small>Genre · BPM · Energy</small>
+            </article>
+            <article class="thinking-card">
+              <span class="thinking-number">06</span>
+              <div class="thinking-icon">✦</div>
+              <b>Ask Epochs</b>
+              <small>Grounded RAG</small>
+            </article>
+          </div>
+          <button class="thinking-arrow thinking-arrow-next" type="button" aria-label="Next step">→</button>
+          <div class="thinking-progress" aria-hidden="true"><span></span></div>
         </div>
       </section>
     </section>

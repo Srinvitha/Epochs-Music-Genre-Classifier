@@ -17,6 +17,22 @@ let activeGenreArtworkIndex = 0;
 
 const $ = (id) => document.getElementById(id);
 
+function initEpochsSplash() {
+  const splash = $("epochSplash");
+  if (!splash) return;
+
+  const finish = () => {
+    if (splash.classList.contains("splash-done")) return;
+    splash.classList.add("splash-done");
+    document.body.classList.add("epoch-home-ready");
+    window.setTimeout(() => splash.remove(), 950);
+  };
+
+  splash.addEventListener("click", finish, { once: true });
+  window.setTimeout(finish, 2500);
+}
+
+
 const audioInput = $("audioInput");
 const chooseButton = $("chooseButton");
 const dropZone = $("dropZone");
@@ -209,7 +225,6 @@ function initAtmosphere() {
 
 function setGenreArtwork(genre) {
   const artwork = $("genreArtwork");
-  const label = $("genreArtLabel");
   const wrap = $("dnaArtWrap");
   const files = GENRE_ART[genre] || GENRE_ART.Electronic;
   activeGenreArtworkIndex = Math.floor(Math.random() * files.length);
@@ -222,7 +237,6 @@ function setGenreArtwork(genre) {
     artwork.alt = `${genre} visual artwork`;
     artwork.classList.add("art-enter");
   }
-  if (label) label.textContent = `${genre.toUpperCase()} · SONG DNA`;
   if (wrap) wrap.dataset.genre = genre.toLowerCase();
 }
 
@@ -846,3 +860,91 @@ document.addEventListener("keydown", (event) => {
     closeMetricModal();
   }
 });
+
+
+// HOW EPOCHS THINKS — cinematic centered carousel.
+// The active step stays centered while its neighbors enter/exit the frame.
+(function initThinkingConveyor(){
+  const conveyor = document.querySelector(".thinking-conveyor");
+  const track = document.querySelector(".thinking-track");
+  const cards = [...document.querySelectorAll(".thinking-card")];
+  const progress = document.querySelector(".thinking-progress span");
+  const prevButton = document.querySelector(".thinking-arrow-prev");
+  const nextButton = document.querySelector(".thinking-arrow-next");
+  if (!conveyor || !track || !cards.length) return;
+
+  let active = 0;
+  let timer = null;
+  const gap = 18;
+
+  function relativeIndex(index){
+    let delta = index - active;
+    const half = cards.length / 2;
+    if (delta > half) delta -= cards.length;
+    if (delta < -half) delta += cards.length;
+    return delta;
+  }
+
+  function update(){
+    const visible = conveyor.clientWidth - 108;
+    const cardWidth = cards[0].getBoundingClientRect().width;
+    const centerX = visible / 2 - cardWidth / 2;
+    const step = cardWidth + gap;
+
+    cards.forEach((card, i) => {
+      const delta = relativeIndex(i);
+      const distance = Math.abs(delta);
+      card.classList.toggle("is-active", delta === 0);
+      card.classList.toggle("is-prev", delta === -1);
+      card.classList.toggle("is-next", delta === 1);
+      card.setAttribute("aria-hidden", distance > 1 ? "true" : "false");
+
+      let x = centerX + delta * step;
+      let scale = delta === 0 ? 1 : .82;
+      let opacity = distance > 1 ? 0 : (delta === 0 ? 1 : .58);
+      card.style.transform = `translate3d(${x}px,0,0) scale(${scale})`;
+      card.style.opacity = opacity;
+      card.style.zIndex = delta === 0 ? 5 : 3;
+    });
+
+    if (progress) progress.style.transform = `scaleX(${(active + 1) / cards.length})`;
+  }
+
+  function go(step){
+    active = (active + step + cards.length) % cards.length;
+    update();
+    restart();
+  }
+
+  function restart(){
+    clearInterval(timer);
+    timer = setInterval(() => {
+      active = (active + 1) % cards.length;
+      update();
+    }, 3200);
+  }
+
+  prevButton?.addEventListener("click", () => go(-1));
+  nextButton?.addEventListener("click", () => go(1));
+
+  cards.forEach((card, index) => {
+    card.addEventListener("click", () => {
+      const delta = relativeIndex(index);
+      if (delta === -1) go(-1);
+      if (delta === 1) go(1);
+    });
+  });
+
+  conveyor.addEventListener("mouseenter", () => clearInterval(timer));
+  conveyor.addEventListener("mouseleave", restart);
+  conveyor.addEventListener("focusin", () => clearInterval(timer));
+  conveyor.addEventListener("focusout", () => setTimeout(restart, 0));
+  conveyor.addEventListener("keydown", (event) => {
+    if (event.key === "ArrowLeft") { event.preventDefault(); go(-1); }
+    if (event.key === "ArrowRight") { event.preventDefault(); go(1); }
+  });
+
+  window.addEventListener("resize", update);
+  update();
+  restart();
+})();
