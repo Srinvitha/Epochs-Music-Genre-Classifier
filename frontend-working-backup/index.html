@@ -12,17 +12,10 @@
   <div class="ambient ambient-b"></div>
 
   <header class="topbar shell">
-    <a class="brand" href="#" aria-label="Epochs home">
+    <a class="brand" href="#">
       <span class="brand-icon">E</span>
-      <span>EPOCH<span class="brand-dot">S</span></span>
+      <span>epoch<span class="brand-dot">.</span></span>
     </a>
-
-    <nav class="topnav" aria-label="Primary navigation">
-      <a href="#analyzerCard">Analyze</a>
-      <a href="#howEpochsWorks" class="future-nav-link">How it works</a>
-      <a href="#askEpochsPanel" class="future-nav-link">Ask Epochs</a>
-    </nav>
-
     <div class="topbar-right">
       <span class="status-dot"></span>
       <span>AI AUDIO LAB</span>
@@ -31,27 +24,16 @@
   </header>
 
   <main class="shell">
-    <section class="hero" id="hero">
-      <div class="hero-backdrop" aria-hidden="true"></div>
-      <div class="hero-grid-glow" aria-hidden="true"></div>
-
+    <section class="hero">
       <div class="hero-copy">
-        <div class="hero-status"><span class="status-pulse"></span> SIGNAL ONLINE · MUSIC INTELLIGENCE</div>
-        <h1>Hear the <em>structure</em><br>behind the music.</h1>
-        <p>Upload a track or record one live. Epochs turns raw audio into a sonic fingerprint — genre, tempo, energy, waveform and Song DNA.</p>
-
-        <div class="hero-actions">
-          <a class="hero-jump" href="#analyzerCard">Start analyzing <span>↓</span></a>
-          <span class="hero-note">No account · Local analysis</span>
-        </div>
-
+        <div class="eyebrow"><span></span> MUSIC INTELLIGENCE</div>
+        <h1>Meet the <em>DNA</em><br>inside your music.</h1>
+        <p>Upload a track or record one live. Epochs extracts its sonic fingerprint — genre, tempo, energy and spectral character.</p>
         <div class="hero-pills">
-          <span><b>08</b> genres</span>
-          <span><b>61</b> audio features</span>
-          <span><b>90s</b> live capture</span>
+          <span>8 genres</span>
+          <span>61 audio features</span>
+          <span>30 sec model windows</span>
         </div>
-
-        <div class="hero-signal-label"><i></i><span>LISTENING FOR STRUCTURE</span><i></i></div>
       </div>
 
       <div class="analyzer-card" id="analyzerCard">
@@ -97,10 +79,6 @@
         <div class="analyze-note"><span>✦</span> Feature extraction + SVM analysis</div>
       </div>
     </section>
-
-    <div class="section-transition" aria-hidden="true">
-      <span></span><span></span><span></span><span></span><span></span><span></span>
-    </div>
 
     <section class="loading hidden" id="loading">
       <div class="loading-core">
@@ -206,7 +184,7 @@
         <div id="ragSources" class="rag-sources hidden"></div>
       </section>
 
-      <section class="future-banner" id="howEpochsWorks">
+      <section class="future-banner">
         <div class="future-copy">
           <div class="eyebrow"><span></span> EPOCHS 2.0 · GENERATIVE AI</div>
           <h2>Understand music.<br><em>Then create it.</em></h2>
