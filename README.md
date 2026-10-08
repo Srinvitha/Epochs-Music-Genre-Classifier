@@ -228,55 +228,6 @@ User Question + Current Song DNA
   Development             Jupyter Notebook, VS Code Experiments and
                                                     implementation
 
-  Version Control         Git + GitHub              Source control
-  -------------------------------------------------------------------------
-
-------------------------------------------------------------------------
-
-## Repository Structure
-
-``` text
-Epochs-Music-Genre-Classifier/
-│
-├── data/
-│   ├── raw/                    # Original dataset archives / audio
-│   └── processed/              # Extracted features and processed data
-│
-├── notebooks/
-│   ├── 01_eda.ipynb
-│   ├── 02_feature_extraction.ipynb
-│   └── 03_model_training.ipynb
-│
-├── src/
-│   ├── audio_processing.py
-│   ├── feature_extraction.py
-│   ├── train.py
-│   └── predict.py
-│
-├── models/
-│   └── final_pipeline.joblib   # Final trained ML pipeline
-│
-├── backend/
-│   ├── main.py                 # FastAPI application
-│   └── rag/
-│       └── storage/            # Local generated RAG index
-│
-├── frontend/
-│   ├── index.html
-│   ├── style.css
-│   └── script.js
-│
-├── results/
-│   ├── eda/
-│   └── model_evaluation/
-│
-├── requirements.txt
-├── requirements-rag.txt
-├── .env.example
-├── README.md
-└── .gitignore
-```
-
 ------------------------------------------------------------------------
 
 # Running Epochs Locally
@@ -284,11 +235,9 @@ Epochs-Music-Genre-Classifier/
 ## 1. Clone the repository
 
 ``` bash
-git clone <repository-url>
+git clone https://github.com/Srinvitha/Epochs-Music-Genre-Classifier
 cd Epochs-Music-Genre-Classifier
 ```
-
-Replace `<repository-url>` with the repository's Git URL.
 
 ------------------------------------------------------------------------
 
