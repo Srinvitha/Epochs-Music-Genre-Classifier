@@ -42,6 +42,7 @@ def _get_index():
         persist_dir=str(STORAGE_DIR)
     )
     _index = load_index_from_storage(storage_context)
+
     return _index
 
 
@@ -49,13 +50,16 @@ def _song_context(song_dna: dict[str, Any]) -> str:
     if not song_dna:
         return "No current Song DNA is available."
 
-    lines = ["CURRENT EPOCHS SONG DNA (measurements/model output, not a full audio description):"]
+    lines = ["CURRENT EPOCHS SONG DNA:"]
     for key, value in song_dna.items():
         if key == "genre_probabilities" and isinstance(value, dict):
-            probs = ", ".join(f"{k}: {v}%" for k, v in value.items())
+            probs = ", ".join(
+                f"{k}: {v}%" for k, v in value.items()
+            )
             lines.append(f"- Genre probabilities: {probs}")
         else:
             lines.append(f"- {key}: {value}")
+
     return "\n".join(lines)
 
 
@@ -90,58 +94,59 @@ def _get_llm():
 
 def ask_epoch(question: str, song_dna: dict[str, Any] | None = None) -> dict:
     index = _get_index()
-    retriever = index.as_retriever(similarity_top_k=3)
+    retriever = index.as_retriever(similarity_top_k=4)
 
-    dna_context = _song_context(song_dna or {})
-    query = f"Creator question: {question}\n\n{dna_context}"
+    query = (
+        f"Question: {question}\n\n"
+        f"{_song_context(song_dna or {})}"
+    )
+
     nodes = retriever.retrieve(query)
 
     context_blocks = []
     sources = []
 
     for node in nodes:
-        chunk_text = node.get_content()
+        text = node.get_content()
         metadata = node.metadata or {}
-        source = (
-            metadata.get("file_name")
-            or metadata.get("file_path")
-            or "Epochs knowledge base"
-        )
-        context_blocks.append(chunk_text)
+        source = metadata.get("file_name") or metadata.get("file_path") or "Epochs knowledge base"
+        context_blocks.append(text)
         if source not in sources:
             sources.append(source)
 
     context = "\n\n--- RETRIEVED SOURCE ---\n\n".join(context_blocks)
 
-    system_prompt = """You are Epochs, a concise, practical music-creation copilot grounded in retrieved knowledge.
+    system_prompt = """You are Epochs' grounded music-analysis assistant.
 
-Help with original music ideas, genre production recipes, remix blueprints, short-form audio for stories/reels/edits, sound design, arrangement, and mixing troubleshooting. Also answer questions about Epochs' model when asked.
+Answer using the retrieved Epochs knowledge and the current Song DNA.
+Never invent measurements or claim that BPM/energy alone determines genre.
+Clearly distinguish:
+- ML classification
+- signal-analysis measurements
+- retrieved music knowledge
 
-Use retrieved context as the source of technical guidance. If it does not support a factual claim, say so briefly; you may still label a clearly speculative idea as a creative suggestion. Do not invent citations, measurements, audio contents, instruments, stems, key, chords, melody, lyrics, or per-feature explanations.
+The current Song DNA contains aggregate BPM, RMS energy, duration, and genre
+probabilities, but no per-feature contribution scores or direct audio
+description. Do not claim that a measurement caused the classification, or
+that the audio contains particular instruments, vocals, or production traits.
+Documented feature groups are model inputs, not evidence of which features
+caused an individual result. Never claim that a combination or interaction of
+features caused a prediction. When asked why a genre was selected, explicitly
+state that the API does not expose per-feature contributions, so the exact
+reason for this individual prediction is unavailable. Then summarize the
+reported genre probabilities and, if useful, list documented feature groups
+without attributing the result to them. Do not describe confidence as certainty.
 
-Interpret Song DNA carefully:
-- Genre probabilities are model outputs, not certainty.
-- BPM, RMS energy, and duration are measurements; they do not determine genre or mood by themselves.
-- The current API does not expose per-feature contributions, so you cannot explain exactly why an individual prediction was made.
-- Do not claim the uploaded audio contains particular instruments or that you have separated or transformed it.
+If the retrieved context does not support a claim, say that the available
+Epochs knowledge base does not establish it.
 
-For creator requests, give actionable steps, not vague inspiration. When useful, structure the answer as:
-1. Concept and target mood
-2. Suggested sound palette
-3. Tempo/rhythm starting points (clearly marked as suggestions)
-4. Short timestamped arrangement matching the requested duration
-5. Production steps/effects
-6. Ending or loop idea
-7. Optional prompt for a separate music-generation tool
-
-Adapt the structure to the question; do not force a long template onto simple questions. Treat tempo ranges and production settings as experiments, not guaranteed formulas. A RAG response or generation prompt does not itself create an audio file. Encourage users to use audio they own or have permission to transform.
-
-Keep responses concise enough for a local CPU model. Prefer clear, useful bullets over long essays."""
+Keep answers concise, technical, and suitable for a college project demo.
+"""
 
     prompt = (
         f"{system_prompt}\n\n"
-        f"RETRIEVED KNOWLEDGE:\n{context}\n\n"
-        f"{dna_context}\n\n"
+        f"RETRIEVED CONTEXT:\n{context}\n\n"
+        f"{_song_context(song_dna or {})}\n\n"
         f"USER QUESTION:\n{question}"
     )
 

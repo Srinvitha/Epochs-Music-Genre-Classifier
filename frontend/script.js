@@ -37,7 +37,7 @@ let epochAudioVolumeOverride = null;
 let epochSongFadeInterval = null;
 
 function setEpochAudioVolume(volume) {
-  const safeVolume = Math.min(0.5, Math.max(0, volume));
+  const safeVolume = Math.min(0.6, Math.max(0, volume));
   if (epochAudio) epochAudio.volume = safeVolume;
   if (epochVolumeSlider) epochVolumeSlider.value = String(Math.round(safeVolume * 100));
   if (epochVolumeValue) epochVolumeValue.textContent = `${Math.round(safeVolume * 100)}%`;
@@ -84,7 +84,7 @@ function updateEpochAudioButton() {
 }
 
 epochVolumeSlider?.addEventListener("input", () => {
-  const percent = Math.min(50, Math.max(0, Number(epochVolumeSlider.value)));
+  const percent = Math.min(60, Math.max(0, Number(epochVolumeSlider.value)));
   epochAudioVolumeOverride = percent / 100;
   setEpochAudioVolume(epochAudioVolumeOverride);
   clearEpochSongFade();
@@ -110,7 +110,7 @@ async function playEpochIntro() {
   epochAudioMode = "intro";
   epochAudio.src = EPOCHS_INTRO_AUDIO;
   epochAudio.loop = true;
-  setEpochAudioVolume(epochAudioVolumeOverride ?? 0.15);
+  setEpochAudioVolume(epochAudioVolumeOverride ?? 0.5);
   epochAudio.load();
   if (epochAudioMuted) return;
 
@@ -131,7 +131,7 @@ async function playEpochSong(file) {
   epochCurrentObjectURL = URL.createObjectURL(file);
   epochAudio.src = epochCurrentObjectURL;
   epochAudio.loop = false;
-  const targetVolume = epochAudioVolumeOverride ?? 0.08;
+  const targetVolume = epochAudioVolumeOverride ?? 0.12;
   setEpochAudioVolume(targetVolume);
   epochAudio.volume = 0;
   epochAudio.load();
@@ -162,7 +162,7 @@ function setEpochAudioMuted(muted) {
   } else if (epochAudioMode === "intro") {
     void playEpochIntro();
   } else if (epochAudio?.src) {
-    const targetVolume = epochAudioVolumeOverride ?? 0.08;
+    const targetVolume = epochAudioVolumeOverride ?? 0.12;
     setEpochAudioVolume(targetVolume);
     epochAudio.volume = 0;
     epochAudio.play().then(() => {
@@ -180,7 +180,7 @@ function retryEpochAudio() {
   if (epochAudioMuted || !epochAudioNeedsGesture || !epochAudio?.paused) return;
   if (epochAudioMode === "intro") void playEpochIntro();
   else if (epochAudio.src) {
-    const targetVolume = epochAudioVolumeOverride ?? 0.08;
+    const targetVolume = epochAudioVolumeOverride ?? 0.12;
     setEpochAudioVolume(targetVolume);
     epochAudio.volume = 0;
     epochAudio.play().then(() => {
@@ -195,7 +195,7 @@ function retryEpochAudio() {
 
 function initEpochAudio() {
   updateEpochAudioButton();
-  setEpochAudioVolume(epochAudioVolumeOverride ?? 0.15);
+  setEpochAudioVolume(epochAudioVolumeOverride ?? 0.5);
   document.addEventListener("pointerdown", retryEpochAudio);
   document.addEventListener("keydown", retryEpochAudio);
   void playEpochIntro();

@@ -1,9 +1,12 @@
+import logging
 from typing import Any
 
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
 
 from .rag.service import ask_epoch
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/rag", tags=["RAG"])
 
@@ -21,8 +24,10 @@ def rag_ask(request: RAGRequest):
             song_dna=request.song_dna,
         )
     except RuntimeError as exc:
+        logger.exception("Epochs RAG runtime failure")
         raise HTTPException(status_code=503, detail=str(exc)) from exc
     except Exception as exc:
+        logger.exception("Epochs RAG request failed")
         raise HTTPException(
             status_code=500,
             detail=f"Epochs RAG failed: {exc}",
