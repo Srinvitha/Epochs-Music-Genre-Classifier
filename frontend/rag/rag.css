@@ -293,3 +293,131 @@
   .rag-orb-core,.rag-orb-ring,.rag-orb-bars i,.rag-answer,.rag-answer.is-loading::after { animation:none !important; }
   .rag-questions button,#ragAskButton { transition:none; }
 }
+
+/* Compact, readable RAG responses */
+#ragAnswer {
+  line-height: 1.65;
+}
+
+#ragAnswer h1,
+#ragAnswer h2,
+#ragAnswer h3,
+#ragAnswer h4 {
+  line-height: 1.3;
+  margin: 14px 0 8px;
+}
+
+#ragAnswer h1 {
+  font-size: 1.35rem;
+}
+
+#ragAnswer h2 {
+  font-size: 1.2rem;
+}
+
+#ragAnswer h3 {
+  font-size: 1.05rem;
+}
+
+#ragAnswer p {
+  margin: 7px 0 12px;
+}
+
+#ragAnswer ul,
+#ragAnswer ol {
+  margin: 6px 0 12px;
+  padding-left: 22px;
+}
+
+#ragAnswer li {
+  margin: 3px 0;
+  padding-left: 2px;
+}
+
+#ragAnswer li p {
+  margin: 0;
+}
+
+#ragAnswer pre {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+#ragAnswer hr {
+  margin: 14px 0;
+  border: 0;
+  border-top: 1px solid rgba(190, 145, 255, 0.2);
+}
+
+/* ===== EPOCHS RAG: COMPACT ANSWER LAYOUT ===== */
+
+/* Prevent flex/grid gaps from stretching the answer */
+#ragAnswer.is-ready {
+  display: block !important;
+  gap: 0 !important;
+  row-gap: 0 !important;
+  line-height: 1.55 !important;
+  min-width: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  word-break: normal;
+}
+
+/* Reset oversized default spacing */
+#ragAnswer.is-ready h1,
+#ragAnswer.is-ready h2,
+#ragAnswer.is-ready h3,
+#ragAnswer.is-ready h4,
+#ragAnswer.is-ready h5,
+#ragAnswer.is-ready h6 {
+  margin: 0 0 10px !important;
+  line-height: 1.3 !important;
+}
+
+#ragAnswer.is-ready h1 { font-size: 1.35rem !important; }
+#ragAnswer.is-ready h2 { font-size: 1.2rem !important; }
+#ragAnswer.is-ready h3 { font-size: 1.08rem !important; }
+#ragAnswer.is-ready h4,
+#ragAnswer.is-ready h5,
+#ragAnswer.is-ready h6 { font-size: 1rem !important; }
+
+#ragAnswer.is-ready p {
+  margin: 0 0 12px !important;
+  line-height: 1.6 !important;
+}
+
+#ragAnswer.is-ready ul,
+#ragAnswer.is-ready ol {
+  display: block !important;
+  margin: 4px 0 14px !important;
+  padding-left: 24px !important;
+}
+
+#ragAnswer.is-ready li {
+  display: list-item !important;
+  margin: 0 0 5px !important;
+  padding: 0 !important;
+  line-height: 1.6 !important;
+}
+
+#ragAnswer.is-ready li p {
+  margin: 0 !important;
+}
+
+#ragAnswer.is-ready blockquote {
+  margin: 10px 0 !important;
+  padding-left: 14px;
+}
+
+#ragAnswer.is-ready pre {
+  max-width: 100%;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+/* Avoid long text escaping the answer panel */
+#ragAnswer.is-ready > * {
+  max-width: 100%;
+  box-sizing: border-box;
+}
